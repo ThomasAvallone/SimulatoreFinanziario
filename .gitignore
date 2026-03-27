@@ -1,0 +1,14 @@
+# Ignore everything in Downloads by default
+*
+
+# Except the simulator and docs
+!finanza_avallone.html
+!.gitignore
+!docs/
+!docs/**
+
+# Common junk
+Thumbs.db
+.DS_Store
+*.tmp
+*.log

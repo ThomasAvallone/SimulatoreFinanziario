@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Finanza Personale · T. Avallone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=JetBrains+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   RESET & VARIABILI
+═══════════════════════════════════════════════ */
+:root {
+  --bg:           #0C0D10;
+  --bg-card:      #13141A;
+  --bg-card-alt:  #0F1016;
+  --border:       rgba(255,255,255,0.055);
+  --border-str:   rgba(255,255,255,0.10);
+  --text:         #EAE5D8;
+  --text-dim:     rgba(234,229,216,0.50);
+  --text-muted:   rgba(234,229,216,0.28);
+  --gold:         #D4A853;
+  --gold-dim:     rgba(212,168,83,0.55);
+  --gold-bg:      rgba(212,168,83,0.07);
+  --blue:         #4A8FD4;
+  --blue-dim:     rgba(74,143,212,0.55);
+  --blue-bg:      rgba(74,143,212,0.07);
+  --orange:       #C4632A;
+  --orange-dim:   rgba(196,99,42,0.55);
+  --orange-bg:    rgba(196,99,42,0.07);
+  --green:        #3DAA6F;
+  --green-dim:    rgba(61,170,111,0.55);
+  --green-bg:     rgba(61,170,111,0.08);
+  --red:          #C45A4A;
+  --mono: 'JetBrains Mono', monospace;
+  --serif: 'Cormorant Garamond', serif;
+  --sans: 'Outfit', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.033) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-attachment: fixed;
+}
+
+/* ═══════════════════════════════════════════════
+   ROUTER
+═══════════════════════════════════════════════ */
+.page { display: none; padding: 1.5rem 1rem 3rem; }
+.page.active { display: block; }
+.page-inner { max-width: 480px; margin: 0 auto; }
+
+/* ═══════════════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════════════ */
+.topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 1.75rem; padding: 0 0.125rem;
+}
+.topbar-back {
+  font-family: var(--mono); font-size: 11px; color: var(--text-muted);
+  background: none; border: none; cursor: pointer; letter-spacing: 0.06em;
+  display: flex; align-items: center; gap: 5px; transition: color 0.15s; padding: 0;
+}
+.topbar-back:hover { color: var(--text-dim); }
+.topbar-badge {
+  font-family: var(--mono); font-size: 9px; color: var(--text-muted);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  border: 0.5px solid var(--border-str); padding: 3px 8px; border-radius: 20px;
+}
+
+/* ═══════════════════════════════════════════════
+   HUB
+═══════════════════════════════════════════════ */
+#page-hub {
+  flex-direction: column; align-items: center;
+  justify-content: center; min-height: 100vh; padding: 2rem 1rem;
+}
+#page-hub.active { display: flex; }
+
+.hub-header { margin-bottom: 2.5rem; max-width: 480px; width: 100%; }
+.hub-eyebrow {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.6rem;
+}
+.hub-title {
+  font-family: var(--serif); font-size: 38px; font-weight: 300;
+  line-height: 1.1; color: var(--text); letter-spacing: -0.01em;
+}
+.hub-title em { font-style: italic; color: var(--gold); }
+.hub-sub {
+  font-size: 13px; font-weight: 300; color: var(--text-dim);
+  margin-top: 0.6rem; line-height: 1.5;
+}
+
+.hub-cards { display: flex; flex-direction: column; gap: 0.625rem; max-width: 480px; width: 100%; }
+
+.hub-card {
+  display: flex; align-items: center; gap: 1.125rem;
+  background: var(--bg-card); border: 0.5px solid var(--border);
+  border-radius: 18px; padding: 1.25rem 1.375rem;
+  cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  position: relative; overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.hub-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hub-card:hover  { background: #16171E; transform: translateY(-1px); }
+.hub-card:active { transform: translateY(0); }
+.hub-card[data-accent="gold"]:hover   { border-color: rgba(212,168,83,0.3); }
+.hub-card[data-accent="blue"]:hover   { border-color: rgba(74,143,212,0.3); }
+.hub-card[data-accent="orange"]:hover { border-color: rgba(196,99,42,0.3); }
+.hub-card[data-accent="green"]:hover  { border-color: rgba(61,170,111,0.3); }
+
+.hub-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 20px;
+}
+.hub-icon[data-accent="gold"]   { background: var(--gold-bg);   border: 0.5px solid rgba(212,168,83,0.2); }
+.hub-icon[data-accent="blue"]   { background: var(--blue-bg);   border: 0.5px solid rgba(74,143,212,0.2); }
+.hub-icon[data-accent="orange"] { background: var(--orange-bg); border: 0.5px solid rgba(196,99,42,0.2); }
+.hub-icon[data-accent="green"]  { background: var(--green-bg);  border: 0.5px solid rgba(61,170,111,0.2); }
+
+.hub-body { flex: 1; min-width: 0; }
+.hub-name { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+.hub-desc { font-size: 12px; font-weight: 300; color: var(--text-dim); line-height: 1.45; }
+.hub-tags { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+.hub-tag {
+  font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.08em;
+  color: var(--text-muted); border: 0.5px solid var(--border-str);
+  border-radius: 20px; padding: 2px 7px;
+}
+.hub-arrow {
+  color: var(--text-muted); font-size: 16px; flex-shrink: 0;
+  transition: transform 0.2s, color 0.2s;
+}
+.hub-card:hover .hub-arrow { transform: translateX(3px); color: var(--text-dim); }
+
+.hub-footer {
+  margin-top: 2rem; text-align: center; font-family: var(--mono);
+  font-size: 9px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase;
+  max-width: 480px; width: 100%;
+}
+
+/* ═══════════════════════════════════════════════
+   COMPONENTI COMUNI (hero, card, ctrl, slider)
+═══════════════════════════════════════════════ */
+.hero {
+  border-radius: 20px; padding: 1.75rem 1.5rem 1.5rem;
+  margin-bottom: 0.75rem; position: relative; overflow: hidden;
+  background: var(--bg-card); border: 0.5px solid var(--border);
+}
+.hero::before {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px; pointer-events: none;
+  background: radial-gradient(circle, var(--hero-glow, rgba(212,168,83,0.07)) 0%, transparent 70%);
+}
+.hero-eyebrow {
+  font-family: var(--mono); font-size: 9px; font-weight: 400;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.6rem;
+}
+.hero-label {
+  font-family: var(--serif); font-size: 13px; font-style: italic;
+  color: var(--text-dim); margin-bottom: 0.3rem;
+}
+.hero-amount {
+  font-family: var(--mono); font-size: 52px; font-weight: 500;
+  line-height: 1; letter-spacing: -0.03em; margin-bottom: 0.3rem;
+}
+.hero-amount-prefix {
+  font-size: 22px; font-weight: 300; vertical-align: 0.3em; margin-right: 1px;
+}
+.hero-sub { font-size: 12px; font-weight: 300; color: var(--text-muted); }
+.hero-range { font-family: var(--mono); font-size: 10px; color: var(--text-muted); }
+.hero-range em { font-style: normal; color: var(--text-dim); }
+.hero-divider { border: none; border-top: 0.5px solid var(--border); margin: 1.25rem 0 1rem; }
+.hero-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+.hero-stat { padding: 0 0.25rem; border-right: 0.5px solid var(--border); }
+.hero-stat:first-child { padding-left: 0; }
+.hero-stat:last-child  { border-right: none; padding-right: 0; }
+.hero-stat-val {
+  font-family: var(--mono); font-size: 14px; font-weight: 500;
+  color: var(--text); display: block; margin-bottom: 2px;
+}
+.hero-stat-lbl {
+  font-family: var(--mono); font-size: 9px; font-weight: 300;
+  color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; display: block;
+}
+
+.card {
+  background: var(--bg-card); border: 0.5px solid var(--border);
+  border-radius: 20px; padding: 1.25rem 1.375rem; margin-bottom: 0.75rem;
+}
+.card-eyebrow {
+  font-family: var(--mono); font-size: 9px; font-weight: 400;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted);
+  margin-bottom: 1.25rem; display: flex; align-items: center; gap: 6px;
+}
+.card-eyebrow::after { content: ''; flex: 1; height: 0.5px; background: var(--border); }
+
+.ctrl { margin-bottom: 1.375rem; }
+.ctrl:last-of-type { margin-bottom: 0; }
+.ctrl-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.6rem; }
+.ctrl-name { font-size: 13px; font-weight: 300; color: var(--text-dim); }
+.ctrl-value { font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--text); }
+.ctrl-unit  { font-size: 11px; font-weight: 300; color: var(--text-muted); margin-left: 1px; }
+.ctrl-ticks { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: var(--text-muted); }
+
+input[type=range] {
+  -webkit-appearance: none; width: 100%; height: 36px; outline: none;
+  cursor: pointer; display: block; margin-bottom: 0.4rem;
+  background: linear-gradient(to right, var(--accent, var(--gold)) var(--pct,0%), var(--border-str) var(--pct,0%)) center / 100% 2px no-repeat;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--accent, var(--gold)); border: 2px solid var(--bg-card);
+  box-shadow: 0 0 0 1px var(--accent-dim, var(--gold-dim)); cursor: pointer;
+}
+input[type=range]::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--accent, var(--gold)); border: 2px solid var(--bg-card); cursor: pointer;
+}
+
+/* info pill */
+.info-pill {
+  display: flex; justify-content: space-between; align-items: center;
+  border-radius: 10px; padding: 0.75rem 1rem; margin-top: 0.5rem;
+  background: var(--accent-bg, var(--gold-bg));
+  border: 0.5px solid var(--accent-border, rgba(212,168,83,0.2));
+}
+.info-pill-lbl  { font-size: 12px; font-weight: 300; color: var(--accent-text, rgba(212,168,83,0.7)); }
+.info-pill-val  { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--accent, var(--gold)); }
+
+.total-line { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 0.625rem; font-weight: 300; }
+.total-line strong { font-family: var(--mono); font-weight: 500; color: var(--text-dim); }
+
+/* toggle */
+.toggle-wrap { display: flex; gap: 0.5rem; }
+.toggle-btn {
+  flex: 1; padding: 0.6rem; font-family: var(--mono); font-size: 11px;
+  font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-muted); background: var(--bg-card-alt);
+  border: 0.5px solid var(--border-str); border-radius: 10px;
+  cursor: pointer; transition: all 0.15s; text-align: center; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.toggle-btn.active { color: var(--accent, var(--blue)); border-color: var(--accent-dim, var(--blue-dim)); background: var(--accent-bg, var(--blue-bg)); }
+
+/* breakdown */
+.bk-row { display: flex; align-items: center; gap: 0.875rem; padding: 0.8rem 0; border-bottom: 0.5px solid var(--border); }
+.bk-row:first-child { padding-top: 0; }
+.bk-row:last-child  { border-bottom: none; padding-bottom: 0; }
+.bk-bar-wrap { flex: 1; height: 3px; background: var(--border-str); border-radius: 2px; overflow: hidden; }
+.bk-bar  { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+.bk-label { font-size: 12px; font-weight: 300; color: var(--text-dim); width: 90px; flex-shrink: 0; }
+.bk-val   { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--text); width: 90px; text-align: right; flex-shrink: 0; }
+
+/* scenari pensione */
+.sc-row { display: flex; align-items: center; gap: 1rem; padding: 0.875rem 0; border-bottom: 0.5px solid var(--border); }
+.sc-row:first-child { padding-top: 0; }
+.sc-row:last-child  { border-bottom: none; padding-bottom: 0; }
+.sc-indicator { width: 3px; height: 36px; border-radius: 3px; flex-shrink: 0; }
+.sc-info { flex: 1; }
+.sc-name { font-size: 13px; font-weight: 400; color: var(--text); margin-bottom: 2px; }
+.sc-sub  { font-family: var(--mono); font-size: 9px; font-weight: 300; color: var(--text-muted); letter-spacing: 0.06em; }
+.sc-right { text-align: right; }
+.sc-capital { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+.sc-income  { font-family: var(--mono); font-size: 10px; font-weight: 300; color: var(--text-muted); }
+
+/* snapshot */
+.snap-date-wrap { position: relative; margin-bottom: 0.875rem; }
+input[type=date] {
+  width: 100%; padding: 12px 14px; font-family: var(--mono); font-size: 14px;
+  color: var(--text); background: var(--bg-card-alt); border: 0.5px solid var(--border-str);
+  border-radius: 10px; outline: none; cursor: pointer; -webkit-appearance: none; color-scheme: dark;
+}
+input[type=date]:focus { border-color: var(--gold-dim); }
+.snap-result { background: var(--bg-card-alt); border-radius: 12px; padding: 1rem; min-height: 70px; }
+.snap-meta { font-size: 11px; font-weight: 300; color: var(--text-muted); line-height: 1.6; margin-bottom: 0.75rem; }
+.snap-meta strong { font-family: var(--mono); font-weight: 500; color: var(--text-dim); }
+.snap-empty { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--text-muted); text-align: center; padding: 1rem 0 0.5rem; }
+.snap-sc-row { display: flex; align-items: center; gap: 10px; padding: 0.5rem 0; border-bottom: 0.5px solid var(--border); }
+.snap-sc-row:first-child { padding-top: 0; }
+.snap-sc-row:last-child  { border-bottom: none; padding-bottom: 0; }
+.snap-dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.snap-name { font-size: 12px; font-weight: 300; color: var(--text-dim); flex: 1; }
+.snap-val  { font-family: var(--mono); font-size: 13px; font-weight: 500; }
+
+/* confronto durate */
+.cmp-row { display: flex; align-items: center; gap: 0.875rem; padding: 0.8rem 0; border-bottom: 0.5px solid var(--border); }
+.cmp-row:first-child { padding-top: 0; }
+.cmp-row:last-child  { border-bottom: none; padding-bottom: 0; }
+.cmp-dur  { font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--text-dim); width: 52px; flex-shrink: 0; }
+.cmp-bar-wrap { flex: 1; height: 3px; background: var(--border-str); border-radius: 2px; overflow: hidden; }
+.cmp-bar  { height: 100%; border-radius: 2px; background: var(--orange); opacity: 0.55; transition: width 0.4s ease; }
+.cmp-bar.hi { opacity: 1; }
+.cmp-rata { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); width: 62px; text-align: right; flex-shrink: 0; }
+.cmp-int  { font-family: var(--mono); font-size: 10px; font-weight: 300; color: var(--text-muted); width: 62px; text-align: right; flex-shrink: 0; }
+
+/* tfr pill pensione */
+.tfr-pill {
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--green-bg); border: 0.5px solid rgba(61,170,111,0.22);
+  border-radius: 10px; padding: 0.75rem 1rem; margin-top: 1rem;
+}
+.tfr-pill-lbl { font-size: 12px; font-weight: 300; color: rgba(61,170,111,0.7); }
+.tfr-pill-val { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--green); }
+
+/* chart */
+.chart-wrap { position: relative; width: 100%; height: 200px; margin-top: 0.25rem; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 1rem; }
+.leg-item { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 9px; font-weight: 300; color: var(--text-muted); letter-spacing: 0.04em; }
+.leg-block { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.leg-line  { width: 14px; height: 2px; border-radius: 1px; flex-shrink: 0; }
+.leg-dash  { width: 14px; height: 0; border-top: 1.5px dashed rgba(234,229,216,0.2); flex-shrink: 0; }
+
+/* note */
+.note { font-size: 9.5px; font-weight: 300; color: var(--text-muted); line-height: 1.7; padding: 0 0.25rem; margin-top: 0.5rem; letter-spacing: 0.01em; }
+.ctrl-section-lbl { font-size: 12px; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+/* ═══════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page.active .hero,
+.page.active .card {
+  animation: fadeUp 0.3s ease forwards;
+}
+.page.active .card:nth-child(2) { animation-delay: 0.05s; }
+.page.active .card:nth-child(3) { animation-delay: 0.10s; }
+.page.active .card:nth-child(4) { animation-delay: 0.15s; }
+.page.active .card:nth-child(5) { animation-delay: 0.20s; }
+
+.hub-card { opacity: 0; animation: fadeUp 0.4s ease forwards; }
+#page-hub.active .hub-card:nth-child(1) { animation-delay: 0.08s; }
+#page-hub.active .hub-card:nth-child(2) { animation-delay: 0.16s; }
+#page-hub.active .hub-card:nth-child(3) { animation-delay: 0.24s; }
+#page-hub.active .hub-card:nth-child(4) { animation-delay: 0.32s; }
+#page-hub.active .hub-card:nth-child(5) { animation-delay: 0.40s; }
+#page-hub.active .hub-header { animation: fadeUp 0.35s ease forwards; }
+
+.page.active .card:nth-child(6) { animation-delay: 0.25s; }
+.page.active .card:nth-child(7) { animation-delay: 0.30s; }
+.page.active .card:nth-child(8) { animation-delay: 0.35s; }
+
+/* PIC vs PAC comparison grid */
+.picpac-cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+/* DCA table */
+.dca-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 11px; }
+.dca-table th {
+  text-align: left; padding: 0.5rem 0.625rem;
+  font-size: 9px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted); border-bottom: 0.5px solid var(--border-str);
+}
+.dca-table td {
+  padding: 0.45rem 0.625rem; color: var(--text-dim);
+  border-bottom: 0.5px solid var(--border); font-size: 11px;
+}
+.dca-table tr:last-child td { border-bottom: none; }
+.dca-table td:last-child, .dca-table th:last-child { text-align: right; }
+.dca-table td:last-child { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     HUB
+══════════════════════════════════════════ -->
+<div id="page-hub" class="page active">
+  <div class="hub-header">
+    <div class="hub-eyebrow">T. Avallone · Finanza Personale</div>
+    <div class="hub-title">I tuoi<br><em>simulatori</em></div>
+    <div class="hub-sub">Strumenti di calcolo per pianificare mutui, prestiti e pensione.</div>
+  </div>
+  <div class="hub-cards">
+    <div class="hub-card" data-accent="blue" onclick="showPage('mutuo')">
+      <div class="hub-icon" data-accent="blue">🏠</div>
+      <div class="hub-body">
+        <div class="hub-name">Mutuo</div>
+        <div class="hub-desc">Piano di ammortamento, rata mensile, confronto tassi fisso e variabile.</div>
+        <div class="hub-tags">
+          <span class="hub-tag">PIANO AMORT.</span>
+          <span class="hub-tag">TASSO FISSO/VAR.</span>
+          <span class="hub-tag">INTERESSI</span>
+        </div>
+      </div>
+      <div class="hub-arrow">→</div>
+    </div>
+    <div class="hub-card" data-accent="orange" onclick="showPage('prestito')">
+      <div class="hub-icon" data-accent="orange">💳</div>
+      <div class="hub-body">
+        <div class="hub-name">Prestito Personale</div>
+        <div class="hub-desc">Calcola rata, TAN, TAEG e costo totale del finanziamento.</div>
+        <div class="hub-tags">
+          <span class="hub-tag">TAN / TAEG</span>
+          <span class="hub-tag">RATA MENSILE</span>
+          <span class="hub-tag">COSTO TOTALE</span>
+        </div>
+      </div>
+      <div class="hub-arrow">→</div>
+    </div>
+    <div class="hub-card" data-accent="gold" onclick="showPage('pensione')">
+      <div class="hub-icon" data-accent="gold">📈</div>
+      <div class="hub-body">
+        <div class="hub-name">Pensione Complementare</div>
+        <div class="hub-desc">Proiezione del fondo pensione su MSCI World con 3 scenari di rendimento.</div>
+        <div class="hub-tags">
+          <span class="hub-tag">MSCI WORLD</span>
+          <span class="hub-tag">TFR</span>
+          <span class="hub-tag">3 SCENARI</span>
+        </div>
+      </div>
+      <div class="hub-arrow">→</div>
+    </div>
+    <div class="hub-card" data-accent="green" onclick="showPage('inps')">
+      <div class="hub-icon" data-accent="green">🏛️</div>
+      <div class="hub-body">
+        <div class="hub-name">Pensione INPS</div>
+        <div class="hub-desc">Stima della pensione pubblica dal tuo estratto conto INPS reale.</div>
+        <div class="hub-tags">
+          <span class="hub-tag">REGIME GENERALE</span>
+          <span class="hub-tag">CONTRIBUTIVO</span>
+          <span class="hub-tag">DATI REALI</span>
+        </div>
+      </div>
+      <div class="hub-arrow">→</div>
+    </div>
+    <div class="hub-card" data-accent="blue" onclick="showPage('pac')">
+      <div class="hub-icon" data-accent="blue">📊</div>
+      <div class="hub-body">
+        <div class="hub-name">PAC / PIC · Investimenti</div>
+        <div class="hub-desc">Simula un piano di accumulo in ETF. Confronto PIC vs PAC, effetto DCA e valore reale.</div>
+        <div class="hub-tags">
+          <span class="hub-tag">PAC / PIC</span>
+          <span class="hub-tag">ETF</span>
+          <span class="hub-tag">DCA</span>
+        </div>
+      </div>
+      <div class="hub-arrow">→</div>
+    </div>
+  </div>
+  <div class="hub-footer">Simulazione indicativa · non consulenza finanziaria</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MUTUO
+══════════════════════════════════════════ -->
+<div id="page-mutuo" class="page">
+<div class="page-inner">
+  <div class="topbar">
+    <button class="topbar-back" onclick="showPage('hub')">← Hub</button>
+    <span class="topbar-badge">Mutuo</span>
+  </div>
+
+  <div class="hero" style="--hero-glow:rgba(74,143,212,0.07);">
+    <div class="hero-eyebrow">rata mensile</div>
+    <div class="hero-label">piano <span id="m-tipo-lbl">francese</span> · tasso fisso</div>
+    <div class="hero-amount" style="color:var(--blue);">
+      <span class="hero-amount-prefix" style="color:var(--blue-dim);">€</span><span id="m-rata">—</span>
+    </div>
+    <div class="hero-sub">al mese per <span id="m-anni-lbl">20</span> anni</div>
+    <hr class="hero-divider">
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-val" id="m-h-tot">—</span>
+        <span class="hero-stat-lbl">totale pagato</span>
+      </div>
+      <div class="hero-stat" style="text-align:center;">
+        <span class="hero-stat-val" id="m-h-int">—</span>
+        <span class="hero-stat-lbl">tot. interessi</span>
+      </div>
+      <div class="hero-stat" style="text-align:right;">
+        <span class="hero-stat-val" id="m-h-costo">—</span>
+        <span class="hero-stat-lbl">costo %</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-eyebrow">parametri</div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">importo mutuo</span>
+        <span class="ctrl-value">€ <span id="m-imp-out">150.000</span></span>
+      </div>
+      <input type="range" id="m-imp" min="50000" max="1000000" step="5000" value="150000" style="--accent:var(--blue);--accent-dim:var(--blue-dim);">
+      <div class="ctrl-ticks"><span>€ 50k</span><span>€ 1M</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">durata</span>
+        <span class="ctrl-value"><span id="m-dur-out">20</span><span class="ctrl-unit"> anni</span></span>
+      </div>
+      <input type="range" id="m-dur" min="5" max="30" step="1" value="20" style="--accent:var(--blue);--accent-dim:var(--blue-dim);">
+      <div class="ctrl-ticks"><span>5</span><span>30</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">tasso annuo</span>
+        <span class="ctrl-value"><span id="m-tasso-out">3,50</span><span class="ctrl-unit">%</span></span>
+      </div>
+      <input type="range" id="m-tasso" min="0.5" max="8" step="0.05" value="3.5" style="--accent:var(--blue);--accent-dim:var(--blue-dim);">
+      <div class="ctrl-ticks"><span>0,5%</span><span>8%</span></div>
+    </div>
+    <div class="ctrl-section-lbl">tipo piano</div>
+    <div class="toggle-wrap" style="--accent:var(--blue);--accent-dim:var(--blue-dim);--accent-bg:var(--blue-bg);">
+      <div class="toggle-btn active" id="m-btn-fr" onclick="mSetTipo('francese')">Francese</div>
+      <div class="toggle-btn"        id="m-btn-it" onclick="mSetTipo('italiano')">Italiano</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-eyebrow">composizione</div>
+    <div class="bk-row">
+      <div class="bk-label">Capitale</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" id="m-bar-cap" style="background:var(--blue);width:70%;"></div></div>
+      <div class="bk-val" id="m-val-cap">—</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">Interessi</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" id="m-bar-int" style="background:var(--red);width:30%;"></div></div>
+      <div class="bk-val" id="m-val-int">—</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">Totale pagato</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" style="background:var(--border-str);width:100%;"></div></div>
+      <div class="bk-val" id="m-val-tot">—</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-eyebrow">evoluzione del debito</div>
+    <div class="chart-wrap"><canvas id="m-chart"></canvas></div>
+    <div class="chart-legend">
+      <div class="leg-item"><span class="leg-block" style="background:var(--blue);"></span>Quota capitale</div>
+      <div class="leg-item"><span class="leg-block" style="background:var(--red);"></span>Quota interessi</div>
+      <div class="leg-item"><span class="leg-block" style="background:rgba(234,229,216,0.15);"></span>Debito residuo</div>
+    </div>
+  </div>
+
+  <p class="note">Piano francese: rata costante, quota interessi decrescente. Piano italiano: quota capitale costante, rata decrescente. Non include spese accessorie (perizia, istruttoria, assicurazione). Simulazione indicativa, non consulenza finanziaria.</p>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PRESTITO
+══════════════════════════════════════════ -->
+<div id="page-prestito" class="page">
+<div class="page-inner">
+  <div class="topbar">
+    <button class="topbar-back" onclick="showPage('hub')">← Hub</button>
+    <span class="topbar-badge">Prestito Personale</span>
+  </div>
+
+  <div class="hero" style="--hero-glow:rgba(196,99,42,0.07);">
+    <div class="hero-eyebrow">rata mensile</div>
+    <div class="hero-label">ammortamento francese a tasso fisso</div>
+    <div class="hero-amount" style="color:var(--orange);">
+      <span class="hero-amount-prefix" style="color:var(--orange-dim);">€</span><span id="p-rata">—</span>
+    </div>
+    <div class="hero-sub">per <span id="p-mesi-lbl">36</span> mesi · TAN <span id="p-tan-lbl">7,00</span>%</div>
+    <hr class="hero-divider">
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-val" id="p-h-tot">—</span>
+        <span class="hero-stat-lbl">totale pagato</span>
+      </div>
+      <div class="hero-stat" style="text-align:center;">
+        <span class="hero-stat-val" id="p-h-int">—</span>
+        <span class="hero-stat-lbl">tot. interessi</span>
+      </div>
+      <div class="hero-stat" style="text-align:right;">
+        <span class="hero-stat-val" id="p-h-taeg">—</span>
+        <span class="hero-stat-lbl">TAEG stimato</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-eyebrow">parametri</div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">importo richiesto</span>
+        <span class="ctrl-value">€ <span id="p-imp-out">10.000</span></span>
+      </div>
+      <input type="range" id="p-imp" min="500" max="75000" step="500" value="10000" style="--accent:var(--orange);--accent-dim:var(--orange-dim);">
+      <div class="ctrl-ticks"><span>€ 500</span><span>€ 75k</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">durata</span>
+        <span class="ctrl-value"><span id="p-dur-out">36</span><span class="ctrl-unit"> mesi</span></span>
+      </div>
+      <input type="range" id="p-dur" min="6" max="120" step="6" value="36" style="--accent:var(--orange);--accent-dim:var(--orange-dim);">
+      <div class="ctrl-ticks"><span>6</span><span>120</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">TAN</span>
+        <span class="ctrl-value"><span id="p-tan-out">7,00</span><span class="ctrl-unit">%</span></span>
+      </div>
+      <input type="range" id="p-tan" min="1" max="20" step="0.25" value="7" style="--accent:var(--orange);--accent-dim:var(--orange-dim);">
+      <div class="ctrl-ticks"><span>1%</span><span>20%</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-eyebrow">confronto durate</div>
+    <div id="p-cmp"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-eyebrow">andamento del debito</div>
+    <div class="chart-wrap"><canvas id="p-chart"></canvas></div>
+    <div class="chart-legend">
+      <div class="leg-item"><span class="leg-block" style="background:var(--orange);opacity:0.8;"></span>Quota interessi</div>
+      <div class="leg-item"><span class="leg-block" style="background:var(--blue);opacity:0.8;"></span>Quota capitale</div>
+      <div class="leg-item"><span class="leg-dash"></span>Debito residuo</div>
+    </div>
+  </div>
+
+  <p class="note">TAEG stimato include solo gli interessi; spese di istruttoria, assicurazione e bolli non incluse. Simulazione indicativa, non consulenza finanziaria.</p>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PENSIONE
+══════════════════════════════════════════ -->
+<div id="page-pensione" class="page">
+<div class="page-inner">
+  <div class="topbar">
+    <button class="topbar-back" onclick="showPage('hub')">← Hub</button>
+    <span class="topbar-badge">MSCI World · 100%</span>
+  </div>
+
+  <div class="hero" style="--hero-glow:rgba(212,168,83,0.07);">
+    <div class="hero-eyebrow">rendita mensile stimata · scenario base</div>
+    <div class="hero-label">alla pensione a <span id="pen-ret-age">70</span> anni (<span id="pen-ret-year">2060</span>)</div>
+    <div class="hero-amount" style="color:var(--gold);">
+      <span class="hero-amount-prefix" style="color:var(--gold-dim);">€</span><span id="pen-rend">—</span>
+    </div>
+    <div class="hero-sub">al mese · regola 4% SWR</div>
+    <div class="hero-range">
+      conservativo <em id="pen-h-min">—</em> &nbsp;/&nbsp; ottimistico <em id="pen-h-max">—</em>
+    </div>
+    <hr class="hero-divider">
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-val" id="pen-h-cap">—</span>
+        <span class="hero-stat-lbl">capitale base</span>
+      </div>
+      <div class="hero-stat" style="text-align:center;">
+        <span class="hero-stat-val" id="pen-h-vers">—</span>
+        <span class="hero-stat-lbl">tot. versato</span>
+      </div>
+      <div class="hero-stat" style="text-align:right;">
+        <span class="hero-stat-val" id="pen-h-mul">—</span>
+        <span class="hero-stat-lbl">moltiplicatore</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-eyebrow">parametri</div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">contributo volontario</span>
+        <span class="ctrl-value">€&thinsp;<span id="pen-pmt-out">50</span><span class="ctrl-unit">/mese</span></span>
+      </div>
+      <input type="range" id="pen-pmt" min="0" max="1000" step="10" value="50" style="--accent:var(--gold);--accent-dim:var(--gold-dim);">
+      <div class="ctrl-ticks"><span>€ 0</span><span>€ 1.000</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">età di pensione</span>
+        <span class="ctrl-value"><span id="pen-ret-out">70</span><span class="ctrl-unit"> anni</span></span>
+      </div>
+      <input type="range" id="pen-ret" min="60" max="75" step="1" value="70" style="--accent:var(--gold);--accent-dim:var(--gold-dim);">
+      <div class="ctrl-ticks"><span>60</span><span>75</span></div>
+    </div>
+    <div class="tfr-pill">
+      <span class="tfr-pill-lbl">TFR conferito (fisso)</span>
+      <span class="tfr-pill-val">€ 96,71 / mese</span>
+    </div>
+    <div class="total-line">totale mensile versato &nbsp;<strong id="pen-total-out">€ 147</strong></div>
+  </div>
+
+  <div class="card">
+    <div class="card-eyebrow">scenari a scadenza</div>
+    <div id="pen-sc-list"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-eyebrow">stima a data specifica</div>
+    <div class="snap-date-wrap"><input type="date" id="pen-snap-date"></div>
+    <div class="snap-result">
+      <div class="snap-meta" id="pen-snap-meta"></div>
+      <div id="pen-snap-sc"><div class="snap-empty">Seleziona una data</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-eyebrow">proiezione nel tempo</div>
+    <div class="chart-wrap"><canvas id="pen-chart"></canvas></div>
+    <div class="chart-legend" id="pen-legend"></div>
+  </div>
+
+  <!-- VANTAGGIO FISCALE -->
+  <div class="card">
+    <div class="card-eyebrow">vantaggio fiscale · IRPEF</div>
+    <div class="ctrl-section-lbl" style="margin-bottom:0.5rem;">scaglione IRPEF</div>
+    <div class="toggle-wrap" style="--accent:var(--gold);--accent-dim:var(--gold-dim);--accent-bg:var(--gold-bg);margin-bottom:1.25rem;">
+      <div class="toggle-btn" id="pen-irpef-23" onclick="penSetIRPEF(0.23)">23%</div>
+      <div class="toggle-btn active" id="pen-irpef-35" onclick="penSetIRPEF(0.35)">35%</div>
+      <div class="toggle-btn" id="pen-irpef-43" onclick="penSetIRPEF(0.43)">43%</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">Vers. annuo</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" id="pen-fb-vers" style="background:var(--text-dim);"></div></div>
+      <div class="bk-val" id="pen-fv-vers">—</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">Deducibile</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" id="pen-fb-ded" style="background:var(--gold);opacity:0.7;"></div></div>
+      <div class="bk-val" id="pen-fv-ded">—</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">Risparmio/anno</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" id="pen-fb-ann" style="background:var(--green);"></div></div>
+      <div class="bk-val" id="pen-fv-ann" style="color:var(--green);">—</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">Cumulato</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" style="background:var(--border-str);width:100%;"></div></div>
+      <div class="bk-val" id="pen-fv-cum" style="color:var(--green);">—</div>
+    </div>
+    <div style="font-size:9.5px;color:var(--text-muted);margin-top:0.875rem;line-height:1.6;">Limite deducibilità: € 5.164,57/anno (solo contributi volontari, non il TFR). Il risparmio fiscale riduce il costo effettivo del piano.</div>
+  </div>
+
+  <!-- INFLAZIONE -->
+  <div class="card">
+    <div class="card-eyebrow">valore reale · €-odierni</div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">inflazione annua attesa</span>
+        <span class="ctrl-value"><span id="pen-inf-out">2,0</span><span class="ctrl-unit">%</span></span>
+      </div>
+      <input type="range" id="pen-inf" min="0.5" max="4" step="0.5" value="2" style="--accent:var(--gold);--accent-dim:var(--gold-dim);">
+      <div class="ctrl-ticks"><span>0,5%</span><span>4%</span></div>
+    </div>
+    <div id="pen-inf-list"></div>
+    <div class="snap-result" style="margin-top:0.875rem;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">rendita reale · scenario base</div>
+        <div style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--gold);">€ <span id="pen-inf-rend">—</span></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">nominale</div>
+        <div style="font-family:var(--mono);font-size:16px;color:var(--text-dim);">€ <span id="pen-inf-rend-nom">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">Inizio versamenti: 06/02/2025 · Nato il 22/01/1990 · TFR residuo in azienda: €3.799,44 (dalla CU, incluso nella proiezione). Rendimenti nominali lordi basati sulla distribuzione storica MSCI World 1970–2024. Scenario conservativo 5%, base 8%, ottimistico 11%. Rendita calcolata con regola 4% SWR (Trinity Study). Valore reale calcolato come capitale nominale / (1 + inflazione)^anni. Simulazione puramente indicativa, non consulenza finanziaria.</p>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PENSIONE INPS
+══════════════════════════════════════════ -->
+<div id="page-inps" class="page">
+<div class="page-inner">
+  <div class="topbar">
+    <button class="topbar-back" onclick="showPage('hub')">← Hub</button>
+    <span class="topbar-badge">INPS · Regime Generale</span>
+  </div>
+
+  <div class="hero" style="--hero-glow:rgba(61,170,111,0.07);">
+    <div class="hero-eyebrow">pensione mensile stimata · scenario base</div>
+    <div class="hero-label">a <span id="i-ret-age">67</span> anni (<span id="i-ret-year">2057</span>) · metodo contributivo</div>
+    <div class="hero-amount" style="color:var(--green);">
+      <span class="hero-amount-prefix" style="color:var(--green-dim);">€</span><span id="i-rend">—</span>
+    </div>
+    <div class="hero-sub">al mese lordi · <span id="i-anni-contrib">—</span> anni di contributi</div>
+    <div class="hero-range">
+      conservativo <em id="i-h-min">—</em> &nbsp;/&nbsp; ottimistico <em id="i-h-max">—</em>
+    </div>
+    <hr class="hero-divider">
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-val" id="i-h-mont">—</span>
+        <span class="hero-stat-lbl">montante</span>
+      </div>
+      <div class="hero-stat" style="text-align:center;">
+        <span class="hero-stat-val" id="i-h-coeff">—</span>
+        <span class="hero-stat-lbl">coeff. trasf.</span>
+      </div>
+      <div class="hero-stat" style="text-align:right;">
+        <span class="hero-stat-val" id="i-h-tasso">—</span>
+        <span class="hero-stat-lbl">rivalutazione</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATI REALI -->
+  <div class="card">
+    <div class="card-eyebrow">posizione reale · estratto INPS 27/03/2026</div>
+    <div class="bk-row">
+      <div class="bk-label">Settimane</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" style="background:var(--green);width:25%;"></div></div>
+      <div class="bk-val" style="color:var(--green);">539 sett.</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">Retribuzione</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" style="background:var(--green);width:40%;"></div></div>
+      <div class="bk-val" style="color:var(--green);">€ 290.256</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">Montante est.</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" style="background:var(--green);width:33%;"></div></div>
+      <div class="bk-val" style="color:var(--green);">€ 95.784</div>
+    </div>
+  </div>
+
+  <!-- PARAMETRI -->
+  <div class="card">
+    <div class="card-eyebrow">parametri</div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">RAL futura stimata</span>
+        <span class="ctrl-value">€ <span id="i-ral-out">30.316</span></span>
+      </div>
+      <input type="range" id="i-ral" min="20000" max="80000" step="500" value="30316" style="--accent:var(--green);--accent-dim:var(--green-dim);">
+      <div class="ctrl-ticks"><span>€ 20k</span><span>€ 80k</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">crescita RAL annua</span>
+        <span class="ctrl-value"><span id="i-crescita-out">1,5</span><span class="ctrl-unit">%</span></span>
+      </div>
+      <input type="range" id="i-crescita" min="0" max="4" step="0.5" value="1.5" style="--accent:var(--green);--accent-dim:var(--green-dim);">
+      <div class="ctrl-ticks"><span>0%</span><span>4%</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">età di pensione</span>
+        <span class="ctrl-value"><span id="i-ret-out">67</span><span class="ctrl-unit"> anni</span></span>
+      </div>
+      <input type="range" id="i-ret" min="63" max="71" step="1" value="67" style="--accent:var(--green);--accent-dim:var(--green-dim);">
+      <div class="ctrl-ticks"><span>63</span><span>71</span></div>
+    </div>
+  </div>
+
+  <!-- SCENARI -->
+  <div class="card">
+    <div class="card-eyebrow">scenari · rivalutazione montante</div>
+    <div id="i-sc-list"></div>
+  </div>
+
+  <!-- CHART -->
+  <div class="card">
+    <div class="card-eyebrow">crescita del montante nel tempo</div>
+    <div class="chart-wrap"><canvas id="i-chart"></canvas></div>
+    <div class="chart-legend">
+      <div class="leg-item"><span class="leg-line" style="background:#C4632A;"></span>Conservativo (1%)</div>
+      <div class="leg-item"><span class="leg-line" style="background:#3DAA6F;"></span>Base (1,5%)</div>
+      <div class="leg-item"><span class="leg-line" style="background:#D4A853;"></span>Ottimistico (2,5%)</div>
+    </div>
+  </div>
+
+  <p class="note">Montante accumulato stimato (€ 95.784) = retribuzione imponibile totale × 33% aliquota IVS, senza rivalutazione storica. Il valore reale INPS è più alto. Rivalutazione montante = media quinquennale PIL nominale (scenari semplificati). Coefficienti di trasformazione DM 2024 (biennio 2025-2026). Pensione annua = montante × coefficiente; mensile = /13. RAL futura costante o crescente come impostato. Non include integrazione al trattamento minimo, pensioni di reversibilità o adeguamenti futuri per speranza di vita. Simulazione puramente indicativa, non consulenza previdenziale.</p>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAC / PIC
+══════════════════════════════════════════ -->
+<div id="page-pac" class="page">
+<div class="page-inner">
+  <div class="topbar">
+    <button class="topbar-back" onclick="showPage('hub')">← Hub</button>
+    <span class="topbar-badge">PAC · PIC · ETF</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero" style="--hero-glow:rgba(74,143,212,0.07);">
+    <div class="hero-eyebrow">capitale finale · scenario base</div>
+    <div class="hero-label"><span id="pac-bench-lbl">MSCI World</span> · <span id="pac-rate-lbl">8,0</span>% annuo</div>
+    <div class="hero-amount" style="color:var(--blue);">
+      <span class="hero-amount-prefix" style="color:var(--blue-dim);">€</span><span id="pac-cap">—</span>
+    </div>
+    <div class="hero-sub">dopo <span id="pac-ann-lbl">20</span> anni · versato <span id="pac-vers-lbl">—</span></div>
+    <div class="hero-range">conservativo <em id="pac-h-min">—</em> &nbsp;/&nbsp; ottimistico <em id="pac-h-max">—</em></div>
+    <hr class="hero-divider">
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-val" id="pac-h-vers">—</span>
+        <span class="hero-stat-lbl">versato totale</span>
+      </div>
+      <div class="hero-stat" style="text-align:center;">
+        <span class="hero-stat-val" id="pac-h-rend">—</span>
+        <span class="hero-stat-lbl">rendimento netto</span>
+      </div>
+      <div class="hero-stat" style="text-align:right;">
+        <span class="hero-stat-val" id="pac-h-mul">—</span>
+        <span class="hero-stat-lbl">moltiplicatore</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BENCHMARK + PARAMETRI -->
+  <div class="card">
+    <div class="card-eyebrow">benchmark & parametri</div>
+    <div style="margin-bottom:1.125rem;">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:0.5rem;">benchmark</div>
+      <div class="toggle-wrap" style="--accent:var(--blue);--accent-dim:var(--blue-dim);--accent-bg:var(--blue-bg);flex-wrap:wrap;">
+        <div class="toggle-btn active" id="pac-b-msci"   onclick="pacSetBench('msci')">MSCI World</div>
+        <div class="toggle-btn"        id="pac-b-sp500"  onclick="pacSetBench('sp500')">S&amp;P 500</div>
+        <div class="toggle-btn"        id="pac-b-world"  onclick="pacSetBench('world')">All World</div>
+        <div class="toggle-btn"        id="pac-b-custom" onclick="pacSetBench('custom')">Custom</div>
+      </div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">rendimento annuo atteso</span>
+        <span class="ctrl-value"><span id="pac-rate-out">8,0</span><span class="ctrl-unit">%</span></span>
+      </div>
+      <input type="range" id="pac-rate" min="2" max="15" step="0.5" value="8" style="--accent:var(--blue);--accent-dim:var(--blue-dim);">
+      <div class="ctrl-ticks"><span>2%</span><span>15%</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">capitale iniziale (PIC seed)</span>
+        <span class="ctrl-value">€ <span id="pac-cap0-out">0</span></span>
+      </div>
+      <input type="range" id="pac-cap0" min="0" max="100000" step="1000" value="0" style="--accent:var(--blue);--accent-dim:var(--blue-dim);">
+      <div class="ctrl-ticks"><span>€ 0</span><span>€ 100k</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">versamento mensile PAC</span>
+        <span class="ctrl-value">€ <span id="pac-pmt-out">200</span></span>
+      </div>
+      <input type="range" id="pac-pmt" min="0" max="2000" step="50" value="200" style="--accent:var(--blue);--accent-dim:var(--blue-dim);">
+      <div class="ctrl-ticks"><span>€ 0</span><span>€ 2.000</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">orizzonte temporale</span>
+        <span class="ctrl-value"><span id="pac-ann-out">20</span><span class="ctrl-unit"> anni</span></span>
+      </div>
+      <input type="range" id="pac-ann" min="5" max="40" step="1" value="20" style="--accent:var(--blue);--accent-dim:var(--blue-dim);">
+      <div class="ctrl-ticks"><span>5</span><span>40</span></div>
+    </div>
+    <div class="total-line" id="pac-total-line"></div>
+  </div>
+
+  <!-- CHART -->
+  <div class="card">
+    <div class="card-eyebrow">crescita del capitale nel tempo</div>
+    <div class="chart-wrap"><canvas id="pac-chart"></canvas></div>
+    <div class="chart-legend" id="pac-legend"></div>
+  </div>
+
+  <!-- SCENARI A SCADENZA -->
+  <div class="card">
+    <div class="card-eyebrow">scenari a scadenza</div>
+    <div id="pac-sc-list"></div>
+  </div>
+
+  <!-- PIC vs PAC -->
+  <div class="card" id="pac-picpac-card" style="display:none;">
+    <div class="card-eyebrow">confronto PIC vs PAC</div>
+    <div class="chart-wrap" style="height:160px;"><canvas id="pac-picpac-chart"></canvas></div>
+    <div class="picpac-cmp" id="pac-picpac-cmp" style="margin-top:0.875rem;"></div>
+    <div style="font-size:9.5px;color:var(--text-muted);margin-top:0.875rem;line-height:1.6;">PIC = intero capitale totale investito il giorno 1. PAC = capitale iniziale + versamenti mensili distribuiti nel tempo. Storicamente il PIC supera il PAC in ~68% dei casi su mercati in crescita costante, ma il PAC riduce il rischio di timing.</div>
+  </div>
+
+  <!-- DCA -->
+  <div class="card" id="pac-dca-card" style="display:none;">
+    <div class="card-eyebrow">effetto DCA · costo medio ponderato</div>
+    <div style="font-size:11px;font-weight:300;color:var(--text-dim);margin-bottom:0.875rem;line-height:1.5;">Simulazione teorica sul primo anno. Prezzo unitario con trend di crescita e oscillazione sinusoidale ±15% (volatilità tipica ETF azionario globale).</div>
+    <div id="pac-dca-table-wrap" style="overflow-x:auto;margin-bottom:0;"></div>
+    <div class="picpac-cmp" id="pac-dca-cmp" style="margin-top:0.875rem;"></div>
+  </div>
+
+  <!-- INFLAZIONE -->
+  <div class="card">
+    <div class="card-eyebrow">valore reale · €-odierni</div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">inflazione annua attesa</span>
+        <span class="ctrl-value"><span id="pac-inf-out">2,0</span><span class="ctrl-unit">%</span></span>
+      </div>
+      <input type="range" id="pac-inf" min="0.5" max="4" step="0.5" value="2" style="--accent:var(--blue);--accent-dim:var(--blue-dim);">
+      <div class="ctrl-ticks"><span>0,5%</span><span>4%</span></div>
+    </div>
+    <div id="pac-inf-list"></div>
+    <div class="snap-result" style="margin-top:0.875rem;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">capitale reale · scenario base</div>
+        <div style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--blue);">€ <span id="pac-inf-cap">—</span></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">nominale</div>
+        <div style="font-family:var(--mono);font-size:16px;color:var(--text-dim);">€ <span id="pac-inf-cap-nom">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">Rendimenti nominali lordi. Conservativo = base −2%, ottimistico = base +2%. PIC: totale capitale (iniziale + PAC futuro) investito il giorno 1. PAC: capitale iniziale ora + versamenti mensili. Effetto DCA: prezzo teorico con trend annuo + oscillazione sinusoidale 15%. Valore reale = capitale / (1+inf)^anni. Rendita 4% SWR. Non include tasse o costi di gestione ETF. Simulazione puramente indicativa, non consulenza finanziaria.</p>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+'use strict';
+
+/* ─────────────────────────────────────────────
+   ROUTER
+───────────────────────────────────────────── */
+const PAGE_INIT = {};
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + name);
+  el.classList.add('active');
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+  if (!PAGE_INIT[name]) {
+    PAGE_INIT[name] = true;
+    if (name === 'mutuo')    mInit();
+    if (name === 'prestito') pInit();
+    if (name === 'pensione') penInit();
+    if (name === 'inps')     iInit();
+    if (name === 'pac')      pacInit();
+  } else {
+    // resize charts on revisit
+    if (name === 'mutuo')    { if (mChart)   mChart.resize();   mRefresh(); }
+    if (name === 'prestito') { if (pChart)   pChart.resize();   pRefresh(); }
+    if (name === 'pensione') { if (penChart) penChart.resize(); penRefresh(); }
+    if (name === 'inps')     { if (iChart)   iChart.resize();   iRefresh(); }
+    if (name === 'pac')      { if (pacChart) pacChart.resize(); if (pacPicPacChart) pacPicPacChart.resize(); pacRefresh(); }
+  }
+}
+
+/* ─────────────────────────────────────────────
+   UTILITIES COMUNI
+───────────────────────────────────────────── */
+const fmtEur = n => new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
+const fmtNum = n => new Intl.NumberFormat('it-IT', { maximumFractionDigits: 0 }).format(n);
+const fmtK       = n => n >= 1e6 ? '\u20AC' + (n/1e6).toFixed(2) + 'M' : n >= 1e3 ? '\u20AC' + Math.round(n/1e3) + 'k' : fmtEur(n);
+const fmtEurFull = n => new Intl.NumberFormat('it-IT', { style:'currency', currency:'EUR', minimumFractionDigits:2, maximumFractionDigits:2 }).format(n);
+
+function updateGradient(el) {
+  const pct = ((+el.value - +el.min) / (+el.max - +el.min)) * 100;
+  el.style.setProperty('--pct', pct + '%');
+}
+
+function chartTooltipDefaults() {
+  return {
+    backgroundColor: '#1A1B22',
+    borderColor: 'rgba(255,255,255,0.08)',
+    borderWidth: 0.5,
+    padding: 12,
+    titleFont: { family: "'JetBrains Mono'", size: 10 },
+    bodyFont:  { family: "'JetBrains Mono'", size: 11 },
+    titleColor: 'rgba(234,229,216,0.45)',
+    bodyColor:  'rgba(234,229,216,0.85)',
+  };
+}
+function axisDefaults() {
+  return {
+    ticks: { font: { family: "'JetBrains Mono'", size: 9 }, color: 'rgba(234,229,216,0.3)' },
+    grid:  { color: 'rgba(255,255,255,0.04)' },
+    border:{ color: 'rgba(255,255,255,0.06)' },
+  };
+}
+
+/* ─────────────────────────────────────────────
+   MUTUO
+───────────────────────────────────────────── */
+let mChart = null;
+let mTipo  = 'francese';
+
+function mSetTipo(t) {
+  mTipo = t;
+  document.getElementById('m-btn-fr').classList.toggle('active', t === 'francese');
+  document.getElementById('m-btn-it').classList.toggle('active', t === 'italiano');
+  mRefresh();
+}
+
+function mAmmFrancese(cap, rAnnuo, anni) {
+  const n = anni * 12, r = rAnnuo / 12;
+  const rata = r === 0 ? cap / n : cap * (r * Math.pow(1+r,n)) / (Math.pow(1+r,n) - 1);
+  let debito = cap; const rows = [];
+  for (let i = 0; i < n; i++) {
+    const intM = debito * r;
+    const capM = i === n - 1 ? debito : rata - intM;
+    debito -= capM;
+    rows.push({ rata: capM + intM, capM, intM, debito: Math.max(0, debito) });
+  }
+  return rows;
+}
+function mAmmItaliano(cap, rAnnuo, anni) {
+  const n = anni * 12, r = rAnnuo / 12;
+  let debito = cap; const rows = [];
+  for (let i = 0; i < n; i++) {
+    const intM = debito * r;
+    const capM = i === n - 1 ? debito : cap / n;
+    const rata = capM + intM;
+    debito -= capM;
+    rows.push({ rata, capM, intM, debito: Math.max(0, debito) });
+  }
+  return rows;
+}
+
+function mRenderChart(rows) {
+  const step  = 12;
+  const labels = [], capD = [], intD = [], debD = [];
+  for (let i = 0; i < rows.length; i += step) {
+    labels.push('Anno ' + (Math.floor(i/12)+1));
+    let sc = 0, si = 0;
+    for (let j = i; j < Math.min(i+step, rows.length); j++) { sc += rows[j].capM; si += rows[j].intM; }
+    capD.push(Math.round(sc));
+    intD.push(Math.round(si));
+    debD.push(Math.round(rows[i].debito + rows[i].capM));
+  }
+  const ax = axisDefaults(), tt = chartTooltipDefaults();
+  const datasets = [
+    { label: 'Quota capitale',  data: capD, backgroundColor: 'rgba(74,143,212,0.75)', borderWidth: 0, stack: 's' },
+    { label: 'Quota interessi', data: intD, backgroundColor: 'rgba(196,90,74,0.75)',  borderWidth: 0, stack: 's' },
+    { label: 'Debito residuo',  data: debD, type: 'line', backgroundColor: 'transparent',
+      borderColor: 'rgba(234,229,216,0.18)', borderWidth: 1.5, pointRadius: 0, tension: 0.3, yAxisID: 'y2' },
+  ];
+  if (!mChart) {
+    mChart = new Chart(document.getElementById('m-chart'), {
+      type: 'bar',
+      data: { labels, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { display: false }, tooltip: { ...tt, callbacks: { label: c => ` ${c.dataset.label}: ${fmtEur(c.parsed.y)}` } } },
+        scales: {
+          x:  { ...ax, stacked: true, ticks: { ...ax.ticks, maxRotation: 45 } },
+          y:  { ...ax, stacked: true, ticks: { ...ax.ticks, callback: v => '\u20AC'+Math.round(v/1000)+'k' } },
+          y2: { position:'right', ticks: { ...ax.ticks, color:'rgba(234,229,216,0.2)', callback: v => '\u20AC'+Math.round(v/1000)+'k' }, grid:{display:false}, border:{display:false} },
+        },
+      },
+    });
+  } else {
+    mChart.data.labels = labels;
+    mChart.data.datasets = datasets;
+    mChart.update('none');
+  }
+}
+
+function mRefresh() {
+  const imp   = +document.getElementById('m-imp').value;
+  const dur   = +document.getElementById('m-dur').value;
+  const tasso = +document.getElementById('m-tasso').value / 100;
+
+  document.getElementById('m-imp-out').textContent  = fmtNum(imp);
+  document.getElementById('m-dur-out').textContent  = dur;
+  document.getElementById('m-tasso-out').textContent = (+document.getElementById('m-tasso').value).toFixed(2).replace('.',',');
+  document.getElementById('m-tipo-lbl').textContent = mTipo;
+  document.getElementById('m-anni-lbl').textContent = dur;
+
+  const rows = mTipo === 'francese' ? mAmmFrancese(imp, tasso, dur) : mAmmItaliano(imp, tasso, dur);
+  const totInt    = rows.reduce((s,r) => s + r.intM, 0);
+  const totPagato = imp + totInt;
+
+  document.getElementById('m-rata').textContent    = fmtNum(Math.round(rows[0].rata));
+  document.getElementById('m-h-tot').textContent   = '\u20AC' + fmtNum(Math.round(totPagato/1000)) + 'k';
+  document.getElementById('m-h-int').textContent   = '\u20AC' + fmtNum(Math.round(totInt/1000)) + 'k';
+  document.getElementById('m-h-costo').textContent = (totInt/imp*100).toFixed(1) + '%';
+
+  const capPct = (imp / totPagato * 100).toFixed(0);
+  const intPct = (totInt / totPagato * 100).toFixed(0);
+  document.getElementById('m-bar-cap').style.width = capPct + '%';
+  document.getElementById('m-bar-int').style.width = intPct + '%';
+  document.getElementById('m-val-cap').textContent = fmtEur(imp);
+  document.getElementById('m-val-int').textContent = fmtEur(Math.round(totInt));
+  document.getElementById('m-val-tot').textContent = fmtEur(Math.round(totPagato));
+
+  mRenderChart(rows);
+}
+
+function mInit() {
+  ['m-imp','m-dur','m-tasso'].forEach(id => {
+    const el = document.getElementById(id);
+    updateGradient(el);
+    el.addEventListener('input', () => { updateGradient(el); mRefresh(); });
+  });
+  mRefresh();
+}
+
+/* ─────────────────────────────────────────────
+   PRESTITO
+───────────────────────────────────────────── */
+let pChart = null;
+
+function pCalcRata(cap, tanAnnuo, mesi) {
+  const r = tanAnnuo / 12;
+  if (r === 0) return cap / mesi;
+  return cap * (r * Math.pow(1+r,mesi)) / (Math.pow(1+r,mesi) - 1);
+}
+function pPiano(cap, tanAnnuo, mesi) {
+  const r = tanAnnuo / 12, rata = pCalcRata(cap, tanAnnuo, mesi);
+  let debito = cap; const rows = [];
+  for (let i = 0; i < mesi; i++) {
+    const intM = debito * r, capM = rata - intM;
+    debito -= capM;
+    rows.push({ intM, capM, debito: Math.max(0, debito) });
+  }
+  return rows;
+}
+
+function pRenderCmp(imp, tan, durCorrente) {
+  const durate = [12,24,36,48,60,84];
+  const rateMax = pCalcRata(imp, tan, 12);
+  document.getElementById('p-cmp').innerHTML = durate.map(d => {
+    const rata = pCalcRata(imp, tan, d);
+    const totInt = rata * d - imp;
+    const hi = d === durCorrente;
+    return `<div class="cmp-row">
+      <div class="cmp-dur">${d} mesi</div>
+      <div class="cmp-bar-wrap"><div class="cmp-bar ${hi?'hi':''}" style="width:${(rata/rateMax*100).toFixed(1)}%;"></div></div>
+      <div class="cmp-rata" style="${hi?'color:var(--orange);':''}">${fmtEur(Math.round(rata))}</div>
+      <div class="cmp-int">${fmtEur(Math.round(totInt))}</div>
+    </div>`;
+  }).join('');
+}
+
+function pRenderChart(rows) {
+  const labels = rows.map((_,i) => i+1);
+  const intD   = rows.map(r => Math.round(r.intM));
+  const capD   = rows.map(r => Math.round(r.capM));
+  const debD   = rows.map(r => Math.round(r.debito));
+  const ax = axisDefaults(), tt = chartTooltipDefaults();
+  const datasets = [
+    { label:'Quota interessi', data:intD, backgroundColor:'rgba(196,99,42,0.75)',  borderWidth:0, stack:'s', order:2 },
+    { label:'Quota capitale',  data:capD, backgroundColor:'rgba(74,143,212,0.75)', borderWidth:0, stack:'s', order:2 },
+    { label:'Debito residuo',  data:debD, type:'line', backgroundColor:'transparent',
+      borderColor:'rgba(234,229,216,0.2)', borderWidth:1.5, borderDash:[4,4], pointRadius:0, tension:0.3, yAxisID:'y2', order:1 },
+  ];
+  if (!pChart) {
+    pChart = new Chart(document.getElementById('p-chart'), {
+      type: 'bar',
+      data: { labels, datasets },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{ legend:{display:false}, tooltip:{ ...tt, callbacks:{
+          title: ctx => 'Mese ' + ctx[0].label,
+          label: c => ` ${c.dataset.label}: ${fmtEur(c.parsed.y)}`,
+        }}},
+        scales:{
+          x: { ...ax, stacked:true, ticks:{...ax.ticks, maxTicksLimit:10, maxRotation:0} },
+          y: { ...ax, stacked:true, ticks:{...ax.ticks, callback: v => fmtEur(v)} },
+          y2:{ position:'right', ticks:{...ax.ticks, color:'rgba(234,229,216,0.2)', callback:v=>'\u20AC'+Math.round(v/1000)+'k'}, grid:{display:false}, border:{display:false} },
+        },
+      },
+    });
+  } else {
+    pChart.data.labels = labels;
+    pChart.data.datasets = datasets;
+    pChart.update('none');
+  }
+}
+
+function pRefresh() {
+  const imp = +document.getElementById('p-imp').value;
+  const dur = +document.getElementById('p-dur').value;
+  const tan = +document.getElementById('p-tan').value / 100;
+  const tanStr = (+document.getElementById('p-tan').value).toFixed(2).replace('.',',');
+
+  document.getElementById('p-imp-out').textContent = fmtNum(imp);
+  document.getElementById('p-dur-out').textContent = dur;
+  document.getElementById('p-tan-out').textContent = tanStr;
+  document.getElementById('p-mesi-lbl').textContent = dur;
+  document.getElementById('p-tan-lbl').textContent  = tanStr;
+
+  const rata     = pCalcRata(imp, tan, dur);
+  const totPagato = rata * dur;
+  const totInt    = totPagato - imp;
+  const taeg      = (+document.getElementById('p-tan').value + 1.2).toFixed(2).replace('.',',');
+
+  document.getElementById('p-rata').textContent   = fmtNum(Math.round(rata));
+  document.getElementById('p-h-tot').textContent  = fmtEur(Math.round(totPagato));
+  document.getElementById('p-h-int').textContent  = fmtEur(Math.round(totInt));
+  document.getElementById('p-h-taeg').textContent = taeg + '%';
+
+  pRenderCmp(imp, tan, dur);
+  pRenderChart(pPiano(imp, tan, dur));
+}
+
+function pInit() {
+  ['p-imp','p-dur','p-tan'].forEach(id => {
+    const el = document.getElementById(id);
+    updateGradient(el);
+    el.addEventListener('input', () => { updateGradient(el); pRefresh(); });
+  });
+  pRefresh();
+}
+
+/* ─────────────────────────────────────────────
+   PENSIONE
+───────────────────────────────────────────── */
+let penChart = null;
+
+const PEN_START       = new Date(2025, 1, 6);
+const PEN_BIRTH       = new Date(1990, 0, 22);
+const PEN_TFR         = 96.71;
+const PEN_TFR_RESIDUO = 3799.44;   // TFR residuo in azienda da CU
+const PEN_DED_MAX     = 5164.57;   // limite deducibilità annua IRPEF
+let   penIRPEF        = 0.35;      // scaglione default 35%
+const PEN_SC = [
+  { label:'Conservativo',    sub:'5% annuo · ciclo ribassista',    rate:0.05, color:'#C4632A' },
+  { label:'Base MSCI World', sub:'8% annuo · media storica retti.',rate:0.08, color:'#D4A853' },
+  { label:'Ottimistico',     sub:'11% annuo · ciclo espansivo',    rate:0.11, color:'#3DAA6F' },
+];
+const penMR  = r => Math.pow(1+r, 1/12) - 1;
+const penFV  = (pmt, m, r) => m <= 0 ? 0 : r === 0 ? pmt * m : pmt * ((Math.pow(1+r,m)-1)/r);
+const penMB  = (a, b) => (b.getFullYear()-a.getFullYear())*12 + (b.getMonth()-a.getMonth());
+function penAgeAt(d) {
+  let a = d.getFullYear() - PEN_BIRTH.getFullYear();
+  const mo = d.getMonth() - PEN_BIRTH.getMonth();
+  if (mo < 0 || (mo === 0 && d.getDate() < PEN_BIRTH.getDate())) a--;
+  return a;
+}
+function penRetDate(age) { return new Date(PEN_BIRTH.getFullYear()+age, PEN_BIRTH.getMonth(), PEN_BIRTH.getDate()); }
+
+function penRenderSc(results) {
+  document.getElementById('pen-sc-list').innerHTML = results.map(r => `
+    <div class="sc-row">
+      <div class="sc-indicator" style="background:${r.color};opacity:0.85;"></div>
+      <div class="sc-info">
+        <div class="sc-name">${r.label}</div>
+        <div class="sc-sub">${r.sub}</div>
+      </div>
+      <div class="sc-right">
+        <div class="sc-capital" style="color:${r.color};">${fmtEur(r.cap)}</div>
+        <div class="sc-income">${fmtEur(r.rend)}/mese</div>
+      </div>
+    </div>`).join('');
+}
+
+function penRenderSnap(total, dateStr) {
+  const sc   = document.getElementById('pen-snap-sc');
+  const meta = document.getElementById('pen-snap-meta');
+  if (!dateStr) { meta.innerHTML = ''; sc.innerHTML = '<div class="snap-empty">Seleziona una data</div>'; return; }
+  const d = new Date(dateStr); if (isNaN(d)) return;
+  const m = Math.max(0, penMB(PEN_START, d));
+  const results = PEN_SC.map(s => {
+    const mr = penMR(s.rate);
+    const cap = penFV(total, m, mr) + PEN_TFR_RESIDUO * Math.pow(1 + mr, m);
+    return { ...s, cap };
+  });
+  meta.innerHTML = `<strong>${d.toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'})}</strong> · età ${penAgeAt(d)} anni · ${m} mesi · tot. versato ${fmtEur(total*m)}`;
+  sc.innerHTML = results.map(r => `
+    <div class="snap-sc-row">
+      <div class="snap-dot" style="background:${r.color};"></div>
+      <div class="snap-name">${r.label}</div>
+      <div class="snap-val" style="color:${r.color};">${fmtEurFull(r.cap)}</div>
+    </div>`).join('');
+}
+
+function penRenderChart(total, retAge) {
+  const rd = penRetDate(retAge);
+  const totalM = Math.max(1, penMB(PEN_START, rd));
+  const step = Math.max(1, Math.floor(totalM / 52));
+  const pts = [];
+  for (let m = 0; m <= totalM; m += step) pts.push(m);
+  if (pts[pts.length-1] !== totalM) pts.push(totalM);
+  const toDate = m => { const d = new Date(PEN_START); d.setMonth(d.getMonth()+m); return d; };
+  const labels = pts.map(m => {
+    const d = toDate(m), yr = d.getFullYear();
+    return pts.indexOf(m) === pts.findIndex(p => toDate(p).getFullYear() === yr) ? String(yr) : '';
+  });
+  const ax = axisDefaults(), tt = chartTooltipDefaults();
+  const datasets = PEN_SC.map(s => ({
+    label: s.label,
+    data: pts.map(m => penFV(total, m, penMR(s.rate))),
+    borderColor: s.color, backgroundColor:'transparent', borderWidth:2, pointRadius:0, tension:0.3,
+  }));
+  datasets.push({ label:'versato', data:pts.map(m=>total*m), borderColor:'rgba(234,229,216,0.18)', backgroundColor:'transparent', borderWidth:1.5, borderDash:[5,5], pointRadius:0, tension:0 });
+
+  if (!penChart) {
+    penChart = new Chart(document.getElementById('pen-chart'), {
+      type:'line', data:{labels, datasets},
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{ legend:{display:false}, tooltip:{...tt, callbacks:{
+          title: ctx => { const d=toDate(pts[ctx[0].dataIndex]); return d.toLocaleDateString('it-IT',{month:'short',year:'numeric'}); },
+          label: c => ` ${c.dataset.label}: ${fmtK(c.parsed.y)}`,
+        }}},
+        scales:{
+          x:{ ...ax, ticks:{...ax.ticks, maxRotation:0, autoSkip:false} },
+          y:{ ...ax, ticks:{...ax.ticks, callback: v => fmtK(v)} },
+        },
+      },
+    });
+  } else {
+    penChart.data.labels = labels;
+    penChart.data.datasets = datasets;
+    penChart.update('none');
+  }
+}
+
+function penSetIRPEF(rate) {
+  penIRPEF = rate;
+  [0.23, 0.35, 0.43].forEach(r => {
+    const id = 'pen-irpef-' + Math.round(r * 100);
+    document.getElementById(id).classList.toggle('active', r === rate);
+  });
+  penRefresh();
+}
+
+function penRenderFiscale(vol, anni) {
+  const versAnnuo  = vol * 12;
+  const deducibile = Math.min(versAnnuo, PEN_DED_MAX);
+  const rispAnnuo  = deducibile * penIRPEF;
+  const rispCum    = rispAnnuo * anni;
+  const maxBar     = PEN_DED_MAX;
+
+  document.getElementById('pen-fb-vers').style.width = Math.min(versAnnuo / maxBar * 100, 100).toFixed(1) + '%';
+  document.getElementById('pen-fb-ded').style.width  = (deducibile / maxBar * 100).toFixed(1) + '%';
+  document.getElementById('pen-fb-ann').style.width  = (rispAnnuo / maxBar * 100).toFixed(1) + '%';
+  document.getElementById('pen-fv-vers').textContent = fmtEur(versAnnuo);
+  document.getElementById('pen-fv-ded').textContent  = fmtEur(deducibile);
+  document.getElementById('pen-fv-ann').textContent  = fmtEur(Math.round(rispAnnuo));
+  document.getElementById('pen-fv-cum').textContent  = fmtK(Math.round(rispCum));
+}
+
+function penRenderInflazione(results, infRate, retAge) {
+  const rd   = penRetDate(retAge);
+  const anni = Math.max(0, penMB(PEN_START, rd)) / 12;
+  const def  = Math.pow(1 + infRate, anni);
+
+  document.getElementById('pen-inf-out').textContent = (infRate * 100).toFixed(1).replace('.', ',');
+  document.getElementById('pen-inf-list').innerHTML = results.map(r => {
+    const realCap  = r.cap / def;
+    const realRend = (realCap * 0.04) / 12;
+    return `<div class="sc-row">
+      <div class="sc-indicator" style="background:${r.color};opacity:0.85;"></div>
+      <div class="sc-info">
+        <div class="sc-name">${r.label}</div>
+        <div class="sc-sub">capitale reale · ${fmtK(Math.round(realCap))}</div>
+      </div>
+      <div class="sc-right">
+        <div class="sc-capital" style="color:${r.color};">${fmtEur(Math.round(realRend))}/mese</div>
+        <div class="sc-income">nominale ${fmtEur(Math.round(r.rend))}/mese</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const base     = results[1];
+  const realRend = (base.cap / def * 0.04) / 12;
+  document.getElementById('pen-inf-rend').textContent     = fmtNum(Math.round(realRend));
+  document.getElementById('pen-inf-rend-nom').textContent = fmtEur(Math.round(base.rend));
+}
+
+function penRenderLegend() {
+  document.getElementById('pen-legend').innerHTML =
+    PEN_SC.map(s => `<div class="leg-item"><span class="leg-line" style="background:${s.color};"></span>${s.label}</div>`).join('') +
+    `<div class="leg-item"><span class="leg-dash"></span>versato</div>`;
+}
+
+function penInitDate(retAge) {
+  const inp = document.getElementById('pen-snap-date');
+  const rd  = penRetDate(retAge);
+  inp.min = PEN_START.toISOString().split('T')[0];
+  inp.max = rd.toISOString().split('T')[0];
+  if (!inp.value) { const t = new Date().toISOString().split('T')[0]; inp.value = t >= inp.min ? t : inp.min; }
+}
+
+function penRefresh() {
+  const vol    = +document.getElementById('pen-pmt').value;
+  const retAge = +document.getElementById('pen-ret').value;
+  const total  = vol + PEN_TFR;
+  const rd     = penRetDate(retAge);
+  const months = Math.max(0, penMB(PEN_START, rd));
+
+  document.getElementById('pen-pmt-out').textContent   = vol.toLocaleString('it-IT');
+  document.getElementById('pen-ret-out').textContent   = retAge;
+  document.getElementById('pen-total-out').textContent = '\u20AC ' + Math.round(total).toLocaleString('it-IT');
+  document.getElementById('pen-ret-age').textContent   = retAge;
+  document.getElementById('pen-ret-year').textContent  = rd.getFullYear();
+  document.getElementById('pen-inf-out').textContent   = (+document.getElementById('pen-inf').value).toFixed(1).replace('.', ',');
+
+  const results = PEN_SC.map(s => {
+    const mr  = penMR(s.rate);
+    const cap = penFV(total, months, mr)
+              + PEN_TFR_RESIDUO * Math.pow(1 + mr, months);
+    return { ...s, cap, rend: (cap * 0.04) / 12 };
+  });
+
+  const base    = results[1];
+  const versato = total * months;
+  document.getElementById('pen-rend').textContent  = Math.round(base.rend).toLocaleString('it-IT');
+  document.getElementById('pen-h-min').textContent = fmtEur(results[0].rend);
+  document.getElementById('pen-h-max').textContent = fmtEur(results[2].rend);
+  document.getElementById('pen-h-cap').textContent = fmtK(base.cap);
+  document.getElementById('pen-h-vers').textContent= fmtK(versato);
+  document.getElementById('pen-h-mul').textContent = versato > 0 ? '\u00D7' + (base.cap/versato).toFixed(1) : '\u2014';
+
+  const anni = months / 12;
+  penRenderSc(results);
+  penRenderFiscale(vol, anni);
+  const infRate = +document.getElementById('pen-inf').value / 100;
+  penRenderInflazione(results, infRate, retAge);
+  penInitDate(retAge);
+  penRenderSnap(total, document.getElementById('pen-snap-date').value);
+  penRenderChart(total, retAge);
+}
+
+/* ─────────────────────────────────────────────
+   PENSIONE INPS
+───────────────────────────────────────────── */
+let iChart = null;
+
+// Dati reali dall'estratto INPS 27/03/2026
+const INPS_MONT_OGGI   = 95784;   // €290.256 × 33%
+const INPS_ANNO_INIZIO = 2026;    // anno corrente
+const INPS_BIRTH_YEAR  = 1990;
+
+// Coefficienti di trasformazione DM 2024 (biennio 2025-2026)
+const INPS_COEFF = { 63:5.009, 64:5.184, 65:5.352, 66:5.540, 67:5.723, 68:5.978, 69:6.166, 70:6.466, 71:6.735 };
+
+const INPS_SC = [
+  { label:'Conservativo', sub:'1,0% rivalutazione · PIL bassa crescita', rate:0.010, color:'#C4632A' },
+  { label:'Base',         sub:'1,5% rivalutazione · scenario centrale',  rate:0.015, color:'#3DAA6F' },
+  { label:'Ottimistico',  sub:'2,5% rivalutazione · PIL espansivo',      rate:0.025, color:'#D4A853' },
+];
+
+function iCalcMontante(ralInizio, crescitaRAL, anni, rivalutazione) {
+  // montante accumulato oggi rivalutato fino alla pensione
+  let mont = INPS_MONT_OGGI * Math.pow(1 + rivalutazione, anni);
+  // contributi futuri: ogni anno RAL*(1+crescita)^t * 33%, rivalutati
+  let ral = ralInizio;
+  for (let t = 0; t < anni; t++) {
+    const contrib = ral * 0.33;
+    mont += contrib * Math.pow(1 + rivalutazione, anni - t - 1);
+    ral *= (1 + crescitaRAL);
+  }
+  return mont;
+}
+
+function iRenderSc(results, retAge) {
+  const coeff = (INPS_COEFF[retAge] ?? INPS_COEFF[67]) / 100;
+  document.getElementById('i-sc-list').innerHTML = results.map(r => {
+    const annua   = r.mont * coeff;
+    const mensile = annua / 13;
+    return `<div class="sc-row">
+      <div class="sc-indicator" style="background:${r.color};opacity:0.85;"></div>
+      <div class="sc-info">
+        <div class="sc-name">${r.label}</div>
+        <div class="sc-sub">${r.sub}</div>
+      </div>
+      <div class="sc-right">
+        <div class="sc-capital" style="color:${r.color};">${fmtEur(Math.round(mensile))}/mese</div>
+        <div class="sc-income">${fmtK(Math.round(r.mont))} montante</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function iRenderChart(ralInizio, crescitaRAL, retAge) {
+  const anniTot = (INPS_BIRTH_YEAR + retAge) - INPS_ANNO_INIZIO;
+  const labels  = [];
+  const datasets = INPS_SC.map(s => ({ label: s.label, data: [], borderColor: s.color, backgroundColor: 'transparent', borderWidth: 2, pointRadius: 0, tension: 0.3 }));
+
+  for (let a = 0; a <= anniTot; a++) {
+    labels.push(INPS_ANNO_INIZIO + a);
+    INPS_SC.forEach((s, idx) => {
+      datasets[idx].data.push(Math.round(iCalcMontante(ralInizio, crescitaRAL, a, s.rate)));
+    });
+  }
+
+  const ax = axisDefaults(), tt = chartTooltipDefaults();
+  if (!iChart) {
+    iChart = new Chart(document.getElementById('i-chart'), {
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { display: false }, tooltip: { ...tt, callbacks: {
+          title: ctx => String(ctx[0].label),
+          label: c => ` ${c.dataset.label}: ${fmtK(c.parsed.y)}`,
+        }}},
+        scales: {
+          x: { ...ax, ticks: { ...ax.ticks, maxTicksLimit: 8, maxRotation: 0 } },
+          y: { ...ax, ticks: { ...ax.ticks, callback: v => fmtK(v) } },
+        },
+      },
+    });
+  } else {
+    iChart.data.labels   = labels;
+    iChart.data.datasets = datasets;
+    iChart.update('none');
+  }
+}
+
+function iRefresh() {
+  const ral      = +document.getElementById('i-ral').value;
+  const crescita = +document.getElementById('i-crescita').value / 100;
+  const retAge   = +document.getElementById('i-ret').value;
+  const retYear  = INPS_BIRTH_YEAR + retAge;
+  const anni     = retYear - INPS_ANNO_INIZIO;
+  const anniContrib = Math.round(anni + 539 / 52);
+  const coeff    = INPS_COEFF[retAge] / 100;
+
+  document.getElementById('i-ral-out').textContent      = fmtNum(ral);
+  document.getElementById('i-crescita-out').textContent = (+document.getElementById('i-crescita').value).toFixed(1).replace('.', ',');
+  document.getElementById('i-ret-out').textContent      = retAge;
+  document.getElementById('i-ret-age').textContent      = retAge;
+  document.getElementById('i-ret-year').textContent     = retYear;
+  document.getElementById('i-anni-contrib').textContent = anniContrib;
+  document.getElementById('i-h-coeff').textContent      = (coeff * 100).toFixed(3).replace('.', ',') + '%';
+
+  const results = INPS_SC.map(s => ({ ...s, mont: iCalcMontante(ral, crescita, anni, s.rate) }));
+  const base    = results[1];
+  const mensileBase = (base.mont * coeff) / 13;
+
+  document.getElementById('i-rend').textContent  = fmtNum(Math.round(mensileBase));
+  document.getElementById('i-h-min').textContent = fmtEur(Math.round((results[0].mont * coeff) / 13));
+  document.getElementById('i-h-max').textContent = fmtEur(Math.round((results[2].mont * coeff) / 13));
+  document.getElementById('i-h-mont').textContent = fmtK(Math.round(base.mont));
+  document.getElementById('i-h-tasso').textContent = '1,5% riv.';
+
+  iRenderSc(results, retAge);
+  iRenderChart(ral, crescita, retAge);
+}
+
+function iInit() {
+  ['i-ral', 'i-crescita', 'i-ret'].forEach(id => {
+    const el = document.getElementById(id);
+    updateGradient(el);
+    el.addEventListener('input', () => { updateGradient(el); iRefresh(); });
+  });
+  iRefresh();
+}
+
+function penInit() {
+  penRenderLegend();
+  ['pen-pmt', 'pen-ret', 'pen-inf'].forEach(id => {
+    const el = document.getElementById(id);
+    updateGradient(el);
+    el.addEventListener('input', () => { updateGradient(el); penRefresh(); });
+  });
+  document.getElementById('pen-snap-date').addEventListener('input', () => {
+    const vol = +document.getElementById('pen-pmt').value;
+    penRenderSnap(vol + PEN_TFR, document.getElementById('pen-snap-date').value);
+  });
+  penRefresh();
+}
+
+/* ─────────────────────────────────────────────
+   PAC / PIC · INVESTIMENTI
+───────────────────────────────────────────── */
+let pacChart = null, pacPicPacChart = null;
+
+const PAC_BENCH = {
+  msci:   { label: 'MSCI World',       rate: 8.0  },
+  sp500:  { label: 'S&P 500',          rate: 10.5 },
+  world:  { label: 'FTSE All World',   rate: 7.5  },
+  custom: { label: 'Personalizzato',   rate: null },
+};
+let pacCurrentBench = 'msci';
+
+function pacMR(rAnnuo) { return Math.pow(1 + rAnnuo, 1/12) - 1; }
+
+function pacFV(cap0, pmt, months, rAnnuo) {
+  const mr = pacMR(rAnnuo);
+  if (mr === 0) return cap0 + pmt * months;
+  return cap0 * Math.pow(1+mr, months) + pmt * ((Math.pow(1+mr, months)-1) / mr);
+}
+
+function pacFVpic(totalCapital, months, rAnnuo) {
+  const mr = pacMR(rAnnuo);
+  if (mr === 0) return totalCapital;
+  return totalCapital * Math.pow(1+mr, months);
+}
+
+function pacGetScenarios(baseRate) {
+  const r0 = Math.max(0.01, baseRate - 0.02);
+  const r2 = baseRate + 0.02;
+  return [
+    { label:'Conservativo', rate:r0,       color:'#C4632A', sub:(r0*100).toFixed(1).replace('.',',')+'\u0025 annuo' },
+    { label:'Base',         rate:baseRate, color:'#4A8FD4', sub:(baseRate*100).toFixed(1).replace('.',',')+'\u0025 annuo' },
+    { label:'Ottimistico',  rate:r2,       color:'#3DAA6F', sub:(r2*100).toFixed(1).replace('.',',')+'\u0025 annuo' },
+  ];
+}
+
+function pacSetBench(key) {
+  pacCurrentBench = key;
+  ['msci','sp500','world','custom'].forEach(k => {
+    document.getElementById('pac-b-' + k).classList.toggle('active', k === key);
+  });
+  if (key !== 'custom') {
+    const sl = document.getElementById('pac-rate');
+    sl.value = PAC_BENCH[key].rate;
+    updateGradient(sl);
+  }
+  pacRefresh();
+}
+
+function pacRenderScenari(scenarios, cap0, pmt, months) {
+  const versato = cap0 + pmt * months;
+  document.getElementById('pac-sc-list').innerHTML = scenarios.map(s => {
+    const cap  = pacFV(cap0, pmt, months, s.rate);
+    const rend = (cap * 0.04) / 12;
+    const mult = versato > 0 ? (cap / versato).toFixed(2) : '\u2014';
+    return `<div class="sc-row">
+      <div class="sc-indicator" style="background:${s.color};opacity:0.85;"></div>
+      <div class="sc-info">
+        <div class="sc-name">${s.label}</div>
+        <div class="sc-sub">${s.sub}</div>
+      </div>
+      <div class="sc-right">
+        <div class="sc-capital" style="color:${s.color};">${fmtEur(Math.round(cap))}</div>
+        <div class="sc-income">rendita ${fmtEur(Math.round(rend))}/mese \u00B7 \u00D7${mult}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function pacRenderChart(scenarios, cap0, pmt, anni) {
+  const months = anni * 12;
+  const step   = Math.max(1, Math.floor(months / 60));
+  const pts    = [];
+  for (let m = 0; m <= months; m += step) pts.push(m);
+  if (pts[pts.length-1] !== months) pts.push(months);
+
+  const labels = pts.map(m => {
+    const yr = Math.round(m / 12);
+    return (m % (12*5) === 0 || m === 0) ? 'Anno ' + yr : '';
+  });
+
+  const datasets = scenarios.map(s => ({
+    label: s.label,
+    data:  pts.map(m => Math.round(pacFV(cap0, pmt, m, s.rate))),
+    borderColor: s.color, backgroundColor: 'transparent',
+    borderWidth: 2, pointRadius: 0, tension: 0.3,
+  }));
+  datasets.push({
+    label: 'Versato',
+    data:  pts.map(m => Math.round(cap0 + pmt * m)),
+    borderColor: 'rgba(234,229,216,0.20)', backgroundColor: 'transparent',
+    borderWidth: 1.5, borderDash: [5,5], pointRadius: 0, tension: 0,
+  });
+
+  document.getElementById('pac-legend').innerHTML =
+    scenarios.map(s => `<div class="leg-item"><span class="leg-line" style="background:${s.color};"></span>${s.label}</div>`).join('') +
+    `<div class="leg-item"><span class="leg-dash"></span>Versato</div>`;
+
+  const ax = axisDefaults(), tt = chartTooltipDefaults();
+  if (!pacChart) {
+    pacChart = new Chart(document.getElementById('pac-chart'), {
+      type: 'line', data: { labels, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode:'index', intersect:false },
+        plugins: { legend:{ display:false }, tooltip:{ ...tt, callbacks:{
+          title: ctx => { const m = pts[ctx[0].dataIndex]; return 'Anno ' + (m/12).toFixed(1).replace('.',','); },
+          label: c => ` ${c.dataset.label}: ${fmtK(c.parsed.y)}`,
+        }}},
+        scales: {
+          x: { ...ax, ticks:{ ...ax.ticks, maxRotation:0, autoSkip:false } },
+          y: { ...ax, ticks:{ ...ax.ticks, callback: v => fmtK(v) } },
+        },
+      },
+    });
+  } else {
+    pacChart.data.labels   = labels;
+    pacChart.data.datasets = datasets;
+    pacChart.update('none');
+  }
+}
+
+function pacRenderPicPac(scenarios, cap0, pmt, anni) {
+  const card = document.getElementById('pac-picpac-card');
+  if (cap0 <= 0) { card.style.display = 'none'; return; }
+  card.style.display = '';
+
+  const months     = anni * 12;
+  const totalVers  = cap0 + pmt * months;
+  const baseRate   = scenarios[1].rate;
+  const capPAC     = pacFV(cap0, pmt, months, baseRate);
+  const capPIC     = pacFVpic(totalVers, months, baseRate);
+  const rendPAC    = (capPAC * 0.04) / 12;
+  const rendPIC    = (capPIC * 0.04) / 12;
+  const delta      = capPIC - capPAC;
+  const deltaSign  = delta >= 0 ? '+' : '';
+
+  document.getElementById('pac-picpac-cmp').innerHTML = `
+    <div style="background:var(--bg-card-alt);border:0.5px solid var(--border-str);border-radius:14px;padding:1rem;">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--blue);text-transform:uppercase;margin-bottom:6px;">PAC</div>
+      <div style="font-family:var(--mono);font-size:20px;font-weight:500;color:var(--text);">${fmtK(Math.round(capPAC))}</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:3px;">${fmtEur(Math.round(rendPAC))}/mese SWR 4%</div>
+    </div>
+    <div style="background:var(--bg-card-alt);border:0.5px solid var(--border-str);border-radius:14px;padding:1rem;">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;">PIC &nbsp;<span style="color:var(--text-muted);font-size:8px;">${deltaSign}${fmtK(Math.abs(Math.round(delta)))}</span></div>
+      <div style="font-family:var(--mono);font-size:20px;font-weight:500;color:var(--text);">${fmtK(Math.round(capPIC))}</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:3px;">${fmtEur(Math.round(rendPIC))}/mese SWR 4%</div>
+    </div>`;
+
+  const step  = Math.max(1, Math.floor(months / 40));
+  const pts   = [];
+  for (let m = 0; m <= months; m += step) pts.push(m);
+  if (pts[pts.length-1] !== months) pts.push(months);
+  const labels  = pts.map(m => m % (12*5) === 0 ? m/12 + 'a' : '');
+  const dataPAC = pts.map(m => Math.round(pacFV(cap0, pmt, m, baseRate)));
+  const dataPIC = pts.map(m => Math.round(pacFVpic(totalVers, m, baseRate)));
+
+  const ax = axisDefaults(), tt = chartTooltipDefaults();
+  if (!pacPicPacChart) {
+    pacPicPacChart = new Chart(document.getElementById('pac-picpac-chart'), {
+      type: 'line',
+      data: { labels, datasets: [
+        { label:'PAC', data:dataPAC, borderColor:'#4A8FD4', backgroundColor:'transparent', borderWidth:2, pointRadius:0, tension:0.3 },
+        { label:'PIC', data:dataPIC, borderColor:'#D4A853', backgroundColor:'transparent', borderWidth:2, borderDash:[4,3], pointRadius:0, tension:0.3 },
+      ]},
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        interaction:{ mode:'index', intersect:false },
+        plugins:{ legend:{ display:false }, tooltip:{ ...tt, callbacks:{
+          title: ctx => 'Anno ' + (pts[ctx[0].dataIndex]/12).toFixed(1).replace('.',','),
+          label: c => ` ${c.dataset.label}: ${fmtK(c.parsed.y)}`,
+        }}},
+        scales:{
+          x: { ...ax, ticks:{ ...ax.ticks, maxRotation:0, autoSkip:false } },
+          y: { ...ax, ticks:{ ...ax.ticks, callback: v => fmtK(v) } },
+        },
+      },
+    });
+  } else {
+    pacPicPacChart.data.labels        = labels;
+    pacPicPacChart.data.datasets[0].data = dataPAC;
+    pacPicPacChart.data.datasets[1].data = dataPIC;
+    pacPicPacChart.update('none');
+  }
+}
+
+function pacRenderDCA(pmt, baseRate, anni) {
+  const card = document.getElementById('pac-dca-card');
+  if (pmt <= 0) { card.style.display = 'none'; return; }
+  card.style.display = '';
+
+  const P0  = 100;
+  const rM  = pacMR(baseRate);
+  const vol = 0.15;
+  let totalSpent = 0, totalShares = 0;
+  const rows = [];
+
+  for (let t = 1; t <= 12; t++) {
+    const price  = P0 * Math.pow(1+rM, t) * (1 + vol * Math.sin(2 * Math.PI * t / 12));
+    const shares = pmt / price;
+    totalSpent  += pmt;
+    totalShares += shares;
+    const avgPrice = totalSpent / totalShares;
+    rows.push({ t, price, shares, avgPrice });
+  }
+
+  const avgDCA    = totalSpent / totalShares;
+  const sharesPIC = totalSpent / P0;
+  const diff      = (avgDCA - P0) / P0 * 100;
+  const diffSign  = diff >= 0 ? '+' : '';
+
+  document.getElementById('pac-dca-table-wrap').innerHTML = `
+    <table class="dca-table">
+      <thead><tr><th>Mese</th><th>Prezzo</th><th>Quote</th><th>Prezzo medio</th></tr></thead>
+      <tbody>${rows.map(r => `<tr>
+        <td>${r.t}</td>
+        <td>${r.price.toFixed(2).replace('.',',')} €</td>
+        <td>${r.shares.toFixed(4).replace('.',',')}</td>
+        <td>${r.avgPrice.toFixed(2).replace('.',',')} €</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+
+  document.getElementById('pac-dca-cmp').innerHTML = `
+    <div style="background:var(--bg-card-alt);border:0.5px solid var(--border-str);border-radius:14px;padding:1rem;">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;">PIC · lump sum</div>
+      <div style="font-family:var(--mono);font-size:17px;font-weight:500;color:var(--text);">P\u2080 = ${P0.toFixed(2).replace('.',',')} \u20AC</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:3px;">${sharesPIC.toFixed(3).replace('.',',')} quote \u00B7 ${fmtEur(Math.round(totalSpent))}</div>
+    </div>
+    <div style="background:var(--bg-card-alt);border:0.5px solid var(--border-str);border-radius:14px;padding:1rem;">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--blue);text-transform:uppercase;margin-bottom:6px;">DCA · mensile</div>
+      <div style="font-family:var(--mono);font-size:17px;font-weight:500;color:var(--text);">P\u0305 = ${avgDCA.toFixed(2).replace('.',',')} \u20AC</div>
+      <div style="font-family:var(--mono);font-size:10px;color:${diff>=0?'var(--red)':'var(--green)'};margin-top:3px;">${diffSign}${diff.toFixed(1).replace('.',',')}% vs PIC \u00B7 ${totalShares.toFixed(3).replace('.',',')} quote</div>
+    </div>`;
+}
+
+function pacRenderInflazione(scenarios, cap0, pmt, months, infRate) {
+  const anni = months / 12;
+  const def  = Math.pow(1 + infRate, anni);
+  document.getElementById('pac-inf-out').textContent = (infRate * 100).toFixed(1).replace('.', ',');
+  document.getElementById('pac-inf-list').innerHTML = scenarios.map(s => {
+    const cap     = pacFV(cap0, pmt, months, s.rate);
+    const realCap = cap / def;
+    const realRend = (realCap * 0.04) / 12;
+    return `<div class="sc-row">
+      <div class="sc-indicator" style="background:${s.color};opacity:0.85;"></div>
+      <div class="sc-info">
+        <div class="sc-name">${s.label}</div>
+        <div class="sc-sub">capitale reale \u00B7 ${fmtK(Math.round(realCap))}</div>
+      </div>
+      <div class="sc-right">
+        <div class="sc-capital" style="color:${s.color};">${fmtEur(Math.round(realRend))}/mese</div>
+        <div class="sc-income">nominale ${fmtEur(Math.round((cap*0.04)/12))}/mese</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const base     = scenarios[1];
+  const capBase  = pacFV(cap0, pmt, months, base.rate);
+  document.getElementById('pac-inf-cap').textContent     = fmtNum(Math.round(capBase / def));
+  document.getElementById('pac-inf-cap-nom').textContent = fmtNum(Math.round(capBase));
+}
+
+function pacRefresh() {
+  const rate    = +document.getElementById('pac-rate').value / 100;
+  const cap0    = +document.getElementById('pac-cap0').value;
+  const pmt     = +document.getElementById('pac-pmt').value;
+  const anni    = +document.getElementById('pac-ann').value;
+  const months  = anni * 12;
+  const infRate = +document.getElementById('pac-inf').value / 100;
+  const rateStr = (+document.getElementById('pac-rate').value).toFixed(1).replace('.', ',');
+
+  document.getElementById('pac-rate-out').textContent  = rateStr;
+  document.getElementById('pac-rate-lbl').textContent  = rateStr;
+  document.getElementById('pac-bench-lbl').textContent = PAC_BENCH[pacCurrentBench].label;
+  document.getElementById('pac-cap0-out').textContent  = fmtNum(cap0);
+  document.getElementById('pac-pmt-out').textContent   = fmtNum(pmt);
+  document.getElementById('pac-ann-out').textContent   = anni;
+  document.getElementById('pac-ann-lbl').textContent   = anni;
+  document.getElementById('pac-inf-out').textContent   = (infRate * 100).toFixed(1).replace('.', ',');
+
+  const versato = cap0 + pmt * months;
+  document.getElementById('pac-total-line').innerHTML =
+    `versato totale: <strong>${fmtEur(Math.round(versato))}</strong>`
+    + (cap0 > 0 ? ` (cap. iniziale ${fmtEur(cap0)} + PAC ${fmtEur(pmt*months)})` : '');
+
+  const scenarios = pacGetScenarios(rate);
+  const base      = scenarios[1];
+  const capBase   = pacFV(cap0, pmt, months, base.rate);
+  const rendimento = capBase - versato;
+  const mult      = versato > 0 ? '\u00D7' + (capBase/versato).toFixed(2) : '\u2014';
+
+  document.getElementById('pac-cap').textContent      = fmtNum(Math.round(capBase));
+  document.getElementById('pac-vers-lbl').textContent = fmtK(Math.round(versato));
+  document.getElementById('pac-h-vers').textContent   = fmtK(Math.round(versato));
+  document.getElementById('pac-h-rend').textContent   = fmtK(Math.round(rendimento));
+  document.getElementById('pac-h-mul').textContent    = mult;
+  document.getElementById('pac-h-min').textContent    = fmtK(Math.round(pacFV(cap0, pmt, months, scenarios[0].rate)));
+  document.getElementById('pac-h-max').textContent    = fmtK(Math.round(pacFV(cap0, pmt, months, scenarios[2].rate)));
+
+  pacRenderChart(scenarios, cap0, pmt, anni);
+  pacRenderScenari(scenarios, cap0, pmt, months);
+  pacRenderPicPac(scenarios, cap0, pmt, anni);
+  pacRenderDCA(pmt, rate, anni);
+  pacRenderInflazione(scenarios, cap0, pmt, months, infRate);
+}
+
+function pacInit() {
+  ['pac-rate','pac-cap0','pac-pmt','pac-ann','pac-inf'].forEach(id => {
+    const el = document.getElementById(id);
+    updateGradient(el);
+    el.addEventListener('input', () => { updateGradient(el); pacRefresh(); });
+  });
+  pacRefresh();
+}
+</script>
+</body>
+</html>
