@@ -1066,6 +1066,13 @@ const fmtNum = n => new Intl.NumberFormat('it-IT', { maximumFractionDigits: 0 })
 const fmtK       = n => n >= 1e6 ? '\u20AC' + (n/1e6).toFixed(2) + 'M' : n >= 1e3 ? '\u20AC' + Math.round(n/1e3) + 'k' : fmtEur(n);
 const fmtEurFull = n => new Intl.NumberFormat('it-IT', { style:'currency', currency:'EUR', minimumFractionDigits:2, maximumFractionDigits:2 }).format(n);
 
+/* ─────────────────────────────────────────────
+   LOCALSTORAGE HELPERS
+───────────────────────────────────────────── */
+const lsSet = (k, v)    => { try { localStorage.setItem('fa_' + k, String(v)); } catch(e) {} };
+const lsGet = (k, def)  => { try { const v = localStorage.getItem('fa_' + k); return v !== null ? v : String(def); } catch(e) { return String(def); } };
+const lsNum = (k, def)  => parseFloat(lsGet(k, def));
+
 function updateGradient(el) {
   const pct = ((+el.value - +el.min) / (+el.max - +el.min)) * 100;
   el.style.setProperty('--pct', pct + '%');
@@ -1099,6 +1106,7 @@ let mTipo  = 'francese';
 
 function mSetTipo(t) {
   mTipo = t;
+  lsSet('mTipo', t);
   document.getElementById('m-btn-fr').classList.toggle('active', t === 'francese');
   document.getElementById('m-btn-it').classList.toggle('active', t === 'italiano');
   mRefresh();
@@ -1203,9 +1211,13 @@ function mRefresh() {
 function mInit() {
   ['m-imp','m-dur','m-tasso'].forEach(id => {
     const el = document.getElementById(id);
+    el.value = lsGet(id, el.value);
     updateGradient(el);
-    el.addEventListener('input', () => { updateGradient(el); mRefresh(); });
+    el.addEventListener('input', () => { lsSet(id, el.value); updateGradient(el); mRefresh(); });
   });
+  mTipo = lsGet('mTipo', 'francese');
+  document.getElementById('m-btn-fr').classList.toggle('active', mTipo === 'francese');
+  document.getElementById('m-btn-it').classList.toggle('active', mTipo === 'italiano');
   mRefresh();
 }
 
@@ -1312,8 +1324,9 @@ function pRefresh() {
 function pInit() {
   ['p-imp','p-dur','p-tan'].forEach(id => {
     const el = document.getElementById(id);
+    el.value = lsGet(id, el.value);
     updateGradient(el);
-    el.addEventListener('input', () => { updateGradient(el); pRefresh(); });
+    el.addEventListener('input', () => { lsSet(id, el.value); updateGradient(el); pRefresh(); });
   });
   pRefresh();
 }
@@ -1425,6 +1438,7 @@ function penRenderChart(total, retAge) {
 
 function penSetIRPEF(rate) {
   penIRPEF = rate;
+  lsSet('penIRPEF', rate);
   [0.23, 0.35, 0.43].forEach(r => {
     const id = 'pen-irpef-' + Math.round(r * 100);
     document.getElementById(id).classList.toggle('active', r === rate);
@@ -1652,8 +1666,9 @@ function iRefresh() {
 function iInit() {
   ['i-ral', 'i-crescita', 'i-ret'].forEach(id => {
     const el = document.getElementById(id);
+    el.value = lsGet(id, el.value);
     updateGradient(el);
-    el.addEventListener('input', () => { updateGradient(el); iRefresh(); });
+    el.addEventListener('input', () => { lsSet(id, el.value); updateGradient(el); iRefresh(); });
   });
   iRefresh();
 }
@@ -1662,8 +1677,13 @@ function penInit() {
   penRenderLegend();
   ['pen-pmt', 'pen-ret', 'pen-inf'].forEach(id => {
     const el = document.getElementById(id);
+    el.value = lsGet(id, el.value);
     updateGradient(el);
-    el.addEventListener('input', () => { updateGradient(el); penRefresh(); });
+    el.addEventListener('input', () => { lsSet(id, el.value); updateGradient(el); penRefresh(); });
+  });
+  penIRPEF = lsNum('penIRPEF', 0.35);
+  [0.23, 0.35, 0.43].forEach(r => {
+    document.getElementById('pen-irpef-' + Math.round(r * 100)).classList.toggle('active', r === penIRPEF);
   });
   document.getElementById('pen-snap-date').addEventListener('input', () => {
     const vol = +document.getElementById('pen-pmt').value;
@@ -1711,6 +1731,7 @@ function pacGetScenarios(baseRate) {
 
 function pacSetBench(key) {
   pacCurrentBench = key;
+  lsSet('pacBench', key);
   ['msci','sp500','world','custom'].forEach(k => {
     document.getElementById('pac-b-' + k).classList.toggle('active', k === key);
   });
@@ -1718,6 +1739,7 @@ function pacSetBench(key) {
     const sl = document.getElementById('pac-rate');
     sl.value = PAC_BENCH[key].rate;
     updateGradient(sl);
+    lsSet('pac-rate', sl.value);
   }
   pacRefresh();
 }
@@ -1982,8 +2004,13 @@ function pacRefresh() {
 function pacInit() {
   ['pac-rate','pac-cap0','pac-pmt','pac-ann','pac-inf'].forEach(id => {
     const el = document.getElementById(id);
+    el.value = lsGet(id, el.value);
     updateGradient(el);
-    el.addEventListener('input', () => { updateGradient(el); pacRefresh(); });
+    el.addEventListener('input', () => { lsSet(id, el.value); updateGradient(el); pacRefresh(); });
+  });
+  pacCurrentBench = lsGet('pacBench', 'msci');
+  ['msci','sp500','world','custom'].forEach(k => {
+    document.getElementById('pac-b-' + k).classList.toggle('active', k === pacCurrentBench);
   });
   pacRefresh();
 }
