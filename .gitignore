@@ -3,6 +3,7 @@
 
 # Except the simulator and docs
 !finanza_avallone.html
+!index.html
 !.gitignore
 !docs/
 !docs/**
