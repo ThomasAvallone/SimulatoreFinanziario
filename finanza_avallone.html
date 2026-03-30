@@ -375,6 +375,29 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 .dca-table td:last-child, .dca-table th:last-child { text-align: right; }
 .dca-table td:last-child { color: var(--gold); }
 
+/* ─── PROFILO ─── */
+.prof-name {
+  font-family: var(--serif); font-size: 30px; font-weight: 300;
+  letter-spacing: -0.01em; color: var(--text); margin-bottom: 2px;
+}
+.prof-age { font-size: 12px; font-weight: 300; color: var(--text-dim); margin-bottom: 1rem; }
+.prof-fire-year {
+  font-family: var(--mono); font-size: 44px; font-weight: 500;
+  color: var(--gold); letter-spacing: -0.03em; line-height: 1;
+  text-shadow: 0 0 18px rgba(212,168,83,0.35);
+}
+.prof-fire-sub { font-size: 12px; font-weight: 300; color: var(--text-dim); margin: 6px 0 10px; }
+.prof-total-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.75rem 0 0; margin-top: 0.5rem;
+  border-top: 0.5px solid var(--border-str);
+}
+.prof-total-lbl {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.prof-total-val { font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--text); }
+
 /* ─── FIRE widget hub ─── */
 .fire-widget {
   margin-top: 1.5rem; padding: 1.125rem 1.375rem;
@@ -521,7 +544,10 @@ input[type=date]:focus { border-color: var(--gold-dim); }
       <div class="hub-arrow">→</div>
     </div>
   </div>
-  <div class="hub-footer">Simulazione indicativa · non consulenza finanziaria</div>
+  <div class="hub-footer" style="display:flex;justify-content:space-between;align-items:center;">
+    <span>Simulazione indicativa · non consulenza finanziaria</span>
+    <button class="topbar-back" onclick="showPage('profilo')" style="font-size:10px;letter-spacing:0.08em;padding:0;">👤 Il mio profilo →</button>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -1143,6 +1169,81 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 </div>
 
 <!-- ══════════════════════════════════════════
+     IL MIO PROFILO
+══════════════════════════════════════════ -->
+<div id="page-profilo" class="page">
+<div class="page-inner">
+  <div class="topbar">
+    <button class="topbar-back" onclick="showPage('hub')">← Hub</button>
+    <span class="topbar-badge">Profilo finanziario</span>
+  </div>
+
+  <!-- ANAGRAFICA -->
+  <div class="card">
+    <div class="card-eyebrow">anagrafica</div>
+    <div class="prof-name">Thomas Avallone</div>
+    <div class="prof-age" id="prof-age-line">36 anni · nato il 22/01/1990</div>
+    <div class="bk-row" style="border-top:0.5px solid var(--border);padding-top:0.75rem;border-bottom:none;">
+      <div class="bk-label">RAL corrente</div>
+      <div class="bk-val" id="prof-ral">—</div>
+    </div>
+  </div>
+
+  <!-- PREVIDENZA -->
+  <div class="card">
+    <div class="card-eyebrow">previdenza pubblica &amp; complementare</div>
+    <div class="bk-row">
+      <div class="bk-label">INPS · scenario base</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" id="prof-bar-inps" style="background:var(--green);width:0%;"></div></div>
+      <div class="bk-val" id="prof-inps" style="color:var(--green);">n.d.</div>
+    </div>
+    <div class="bk-row" style="border-bottom:none;">
+      <div class="bk-label">Complementare · scenario base</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" id="prof-bar-pen" style="background:var(--gold);width:0%;"></div></div>
+      <div class="bk-val" id="prof-pen" style="color:var(--gold);">n.d.</div>
+    </div>
+    <div class="prof-total-row">
+      <span class="prof-total-lbl">totale pensione mensile</span>
+      <span class="prof-total-val" id="prof-pen-tot">—</span>
+    </div>
+    <div class="card-eyebrow" style="margin-top:1.125rem;">posizione Allianz · Linea Azionaria</div>
+    <div class="bk-row" style="margin-top:0.5rem;">
+      <div class="bk-label">Montante al 31/12/2025</div>
+      <div class="bk-val" style="color:var(--gold);">€ 931,24</div>
+    </div>
+    <div class="bk-row" style="border-bottom:none;">
+      <div class="bk-label">Settimane INPS contribuite</div>
+      <div class="bk-val">539</div>
+    </div>
+  </div>
+
+  <!-- FIRE -->
+  <div class="card" style="border-color:rgba(212,168,83,0.15);position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;pointer-events:none;background:radial-gradient(circle,rgba(212,168,83,0.06) 0%,transparent 70%);"></div>
+    <div class="card-eyebrow">🔥 FIRE · indipendenza finanziaria</div>
+    <div class="prof-fire-year" id="prof-fire-year">—</div>
+    <div class="prof-fire-sub" id="prof-fire-sub">Configura il FIRE Calculator →</div>
+    <div class="fire-prog-wrap" id="prof-fire-prog-wrap" style="display:none;">
+      <div class="fire-prog-bar" id="prof-fire-prog" style="width:0%;"></div>
+    </div>
+  </div>
+
+  <!-- IMPEGNI FINANZIARI (visibile solo se configurati) -->
+  <div class="card" id="prof-impegni-card" style="display:none;">
+    <div class="card-eyebrow">impegni finanziari attivi</div>
+    <div id="prof-impegni-list"></div>
+  </div>
+
+  <!-- PAC (visibile solo se configurato) -->
+  <div class="card" id="prof-pac-card" style="display:none;">
+    <div class="card-eyebrow">piano di accumulo · PAC/PIC</div>
+    <div id="prof-pac-body"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
      FIRE CALCULATOR
 ══════════════════════════════════════════ -->
 <div id="page-fire" class="page">
@@ -1289,6 +1390,7 @@ function showPage(name) {
     if (name === 'inps')     iInit();
     if (name === 'pac')      pacInit();
     if (name === 'fire')     fireInit();
+    if (name === 'profilo')  profileInit();
   } else {
     // resize charts on revisit
     if (name === 'mutuo')    { if (mChart)    mChart.resize();    mRefresh(); }
@@ -1297,6 +1399,7 @@ function showPage(name) {
     if (name === 'inps')     { if (iChart)    iChart.resize();    iRefresh(); }
     if (name === 'pac')      { if (pacChart)  pacChart.resize();  if (pacPicPacChart) pacPicPacChart.resize(); pacRefresh(); }
     if (name === 'fire')     { if (fireChart) fireChart.resize(); fireRefresh(); }
+    if (name === 'profilo')  profileRefresh();
   }
 }
 
@@ -2460,6 +2563,129 @@ function fireInit() {
 }
 
 document.addEventListener('DOMContentLoaded', showHubFire);
+
+/* ─────────────────────────────────────────────
+   PROFILO FINANZIARIO
+───────────────────────────────────────────── */
+function profCalcRataMutuo(imp, tassoAnnuo, anni) {
+  if (imp <= 0 || anni <= 0) return 0;
+  const r = tassoAnnuo / 100 / 12, n = anni * 12;
+  return r === 0 ? imp / n : imp * (r * Math.pow(1+r,n)) / (Math.pow(1+r,n) - 1);
+}
+function profCalcRataPrestito(imp, tan, mesi) {
+  if (imp <= 0 || mesi <= 0) return 0;
+  const r = tan / 100 / 12;
+  return r === 0 ? imp / mesi : imp * (r * Math.pow(1+r,mesi)) / (Math.pow(1+r,mesi) - 1);
+}
+function profPacFV(cap0, pmt, anni, rateAnnuo) {
+  const mr = Math.pow(1 + rateAnnuo/100, 1/12) - 1;
+  const m  = Math.round(anni * 12);
+  const fvP = mr === 0 ? pmt * m : pmt * ((Math.pow(1+mr,m)-1)/mr);
+  return cap0 * Math.pow(1+mr, m) + fvP;
+}
+function profCalcAge() {
+  const birth = new Date(1990, 0, 22), today = new Date();
+  let a = today.getFullYear() - birth.getFullYear();
+  if (today.getMonth() < birth.getMonth() ||
+     (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())) a--;
+  return a;
+}
+
+function profileRefresh() {
+  // Anagrafica
+  const age = profCalcAge();
+  document.getElementById('prof-age-line').textContent = age + ' anni · nato il 22/01/1990';
+  const ral = lsNum('i-ral', 30316);
+  document.getElementById('prof-ral').textContent = fmtEur(Math.round(ral)) + '/anno';
+
+  // Previdenza
+  const inps   = lsNum('cache_inps_rend', 0);
+  const pen    = lsNum('cache_pen_rend', 0);
+  const totPen = inps + pen;
+  const maxPen = Math.max(inps, pen, 1);
+  document.getElementById('prof-inps').textContent     = inps > 0 ? fmtEur(Math.round(inps)) + '/mese' : 'n.d.';
+  document.getElementById('prof-pen').textContent      = pen  > 0 ? fmtEur(Math.round(pen))  + '/mese' : 'n.d.';
+  document.getElementById('prof-pen-tot').textContent  = totPen > 0 ? fmtEur(Math.round(totPen)) + '/mese' : '—';
+  document.getElementById('prof-bar-inps').style.width = (inps / maxPen * 100).toFixed(0) + '%';
+  document.getElementById('prof-bar-pen').style.width  = (pen  / maxPen * 100).toFixed(0) + '%';
+
+  // FIRE
+  const fireYear = lsGet('fire_year', '');
+  const fireSub  = lsGet('fire_sub', '');
+  const firePct  = lsNum('fire_pct', 0);
+  const fyEl = document.getElementById('prof-fire-year');
+  const fsEl = document.getElementById('prof-fire-sub');
+  const fpW  = document.getElementById('prof-fire-prog-wrap');
+  const fpB  = document.getElementById('prof-fire-prog');
+  if (fireYear) {
+    fyEl.textContent  = fireYear;
+    fsEl.textContent  = fireSub;
+    fpW.style.display = '';
+    fpB.style.width   = Math.min(100, firePct).toFixed(1) + '%';
+  } else {
+    fyEl.textContent  = '—';
+    fsEl.textContent  = 'Configura il FIRE Calculator →';
+    fpW.style.display = 'none';
+  }
+
+  // Impegni finanziari
+  const mImp = lsNum('m-imp', 0);
+  const pImp = lsNum('p-imp', 0);
+  const rows = [];
+  if (mImp > 0) {
+    const mDur = lsNum('m-dur', 20), mTasso = lsNum('m-tasso', 3);
+    const rata = profCalcRataMutuo(mImp, mTasso, mDur);
+    rows.push(`<div class="bk-row${pImp > 0 ? '' : '" style="border-bottom:none'}">
+      <div style="flex:1">
+        <div class="bk-label">Mutuo</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${fmtEur(mImp)} · ${mDur} anni · ${mTasso.toFixed(2).replace('.',',')}% p.a.</div>
+      </div>
+      <div class="bk-val" style="color:var(--blue);">${fmtEur(Math.round(rata))}/mese</div>
+    </div>`);
+  }
+  if (pImp > 0) {
+    const pDur = lsNum('p-dur', 36), pTan = lsNum('p-tan', 7);
+    const rata = profCalcRataPrestito(pImp, pTan, pDur);
+    rows.push(`<div class="bk-row" style="border-bottom:none">
+      <div style="flex:1">
+        <div class="bk-label">Prestito personale</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${fmtEur(pImp)} · ${pDur} mesi · TAN ${pTan.toFixed(2).replace('.',',')}%</div>
+      </div>
+      <div class="bk-val" style="color:var(--orange);">${fmtEur(Math.round(rata))}/mese</div>
+    </div>`);
+  }
+  const impCard = document.getElementById('prof-impegni-card');
+  impCard.style.display = rows.length > 0 ? '' : 'none';
+  if (rows.length > 0) document.getElementById('prof-impegni-list').innerHTML = rows.join('');
+
+  // PAC
+  const pacCap0 = lsNum('pac-cap0', 0), pacPmt = lsNum('pac-pmt', 0);
+  const pacCard = document.getElementById('prof-pac-card');
+  if (pacCap0 > 0 || pacPmt > 0) {
+    const pacAnn   = lsNum('pac-ann', 20);
+    const pacRate  = lsNum('pac-rate', 8);
+    const pacBench = lsGet('pacBench', 'msci');
+    const benchNames = { msci:'MSCI World', sp500:'S&P 500', world:'All World', custom:'Personalizzato' };
+    const capFin = profPacFV(pacCap0, pacPmt, pacAnn, pacRate);
+    const versato = pacCap0 + pacPmt * pacAnn * 12;
+    document.getElementById('prof-pac-body').innerHTML = `
+      <div class="bk-row"><div class="bk-label">Benchmark</div><div class="bk-val">${benchNames[pacBench]||'Custom'} · ${pacRate.toFixed(1).replace('.',',')}%</div></div>
+      <div class="bk-row"><div class="bk-label">Capitale iniziale</div><div class="bk-val">${fmtEur(Math.round(pacCap0))}</div></div>
+      <div class="bk-row"><div class="bk-label">Versamento mensile</div><div class="bk-val">${fmtEur(Math.round(pacPmt))}/mese</div></div>
+      <div class="bk-row" style="border-bottom:none"><div class="bk-label">Orizzonte</div><div class="bk-val">${Math.round(pacAnn)} anni</div></div>
+      <div class="prof-total-row">
+        <span class="prof-total-lbl">capitale stimato · scenario base</span>
+        <span class="prof-total-val" style="color:var(--blue);">${fmtK(Math.round(capFin))}</span>
+      </div>`;
+    pacCard.style.display = '';
+  } else {
+    pacCard.style.display = 'none';
+  }
+}
+
+function profileInit() {
+  profileRefresh();
+}
 </script>
 </body>
 </html>
