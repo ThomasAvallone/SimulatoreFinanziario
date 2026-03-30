@@ -350,6 +350,7 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 #page-hub.active .hub-card:nth-child(3) { animation-delay: 0.24s; }
 #page-hub.active .hub-card:nth-child(4) { animation-delay: 0.32s; }
 #page-hub.active .hub-card:nth-child(5) { animation-delay: 0.40s; }
+#page-hub.active .hub-card:nth-child(6) { animation-delay: 0.48s; }
 #page-hub.active .hub-header { animation: fadeUp 0.35s ease forwards; }
 
 .page.active .card:nth-child(6) { animation-delay: 0.25s; }
@@ -373,6 +374,48 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 .dca-table tr:last-child td { border-bottom: none; }
 .dca-table td:last-child, .dca-table th:last-child { text-align: right; }
 .dca-table td:last-child { color: var(--gold); }
+
+/* ─── FIRE widget hub ─── */
+.fire-widget {
+  margin-top: 1.5rem; padding: 1.125rem 1.375rem;
+  background: var(--bg-card); border: 0.5px solid rgba(212,168,83,0.15);
+  border-radius: 18px; position: relative; overflow: hidden;
+  cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.fire-widget:hover { border-color: rgba(212,168,83,0.4); background: #16171E; }
+.fire-widget::before {
+  content: ''; position: absolute; top: -50px; right: -50px;
+  width: 200px; height: 200px; pointer-events: none;
+  background: radial-gradient(circle, rgba(212,168,83,0.07) 0%, transparent 70%);
+}
+.fire-widget-inner { display: flex; align-items: center; gap: 1.25rem; }
+.fire-year-big {
+  font-family: var(--mono); font-size: 48px; font-weight: 500;
+  color: var(--gold); letter-spacing: -0.03em; line-height: 1; flex-shrink: 0;
+  text-shadow: 0 0 20px rgba(212,168,83,0.4), 0 0 40px rgba(212,168,83,0.15);
+}
+.fire-year-big.empty { font-size: 34px; color: var(--text-muted); text-shadow: none; }
+.fire-meta { flex: 1; min-width: 0; }
+.fire-eyebrow-hub {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gold-dim); margin-bottom: 4px;
+}
+.fire-sub-hub { font-size: 12px; font-weight: 300; color: var(--text-dim); line-height: 1.4; }
+.fire-prog-wrap { margin-top: 8px; height: 2px; background: var(--border-str); border-radius: 2px; overflow: hidden; }
+.fire-prog-bar  { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.6s ease; box-shadow: 0 0 6px rgba(212,168,83,0.55); }
+/* FIRE hero progress */
+.fire-hero-prog-wrap { margin-top: 1.125rem; height: 4px; background: var(--border-str); border-radius: 4px; overflow: hidden; }
+.fire-hero-prog-bar  { height: 100%; border-radius: 4px; transition: width 0.6s ease; background: linear-gradient(90deg, var(--gold-dim), var(--gold)); box-shadow: 0 0 10px rgba(212,168,83,0.5); }
+/* FIRE copertura rows */
+.fire-cov-row { display:flex; align-items:center; gap:0.875rem; padding:0.75rem 0; border-bottom:0.5px solid var(--border); }
+.fire-cov-row:first-child { padding-top:0; }
+.fire-cov-row:last-child  { border-bottom:none; padding-bottom:0; }
+.fire-cov-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.fire-cov-lbl { font-size:12px; font-weight:300; color:var(--text-dim); flex:1; }
+.fire-cov-bar-wrap { width:72px; height:3px; background:var(--border-str); border-radius:2px; overflow:hidden; flex-shrink:0; }
+.fire-cov-bar { height:100%; border-radius:2px; transition:width 0.4s ease; }
+.fire-cov-val { font-family:var(--mono); font-size:12px; font-weight:500; color:var(--text); width:68px; text-align:right; flex-shrink:0; }
 </style>
 </head>
 <body>
@@ -385,6 +428,18 @@ input[type=date]:focus { border-color: var(--gold-dim); }
     <div class="hub-eyebrow">T. Avallone · Finanza Personale</div>
     <div class="hub-title">I tuoi<br><em>simulatori</em></div>
     <div class="hub-sub">Strumenti di calcolo per pianificare mutui, prestiti e pensione.</div>
+    <div class="fire-widget" onclick="showPage('fire')" id="hub-fire-widget">
+      <div class="fire-widget-inner">
+        <div class="fire-year-big empty" id="hub-fire-year">—</div>
+        <div class="fire-meta">
+          <div class="fire-eyebrow-hub">🔥 FIRE · anno stimato</div>
+          <div class="fire-sub-hub" id="hub-fire-sub">Configura il calcolatore →</div>
+          <div class="fire-prog-wrap" id="hub-fire-prog-wrap" style="display:none;">
+            <div class="fire-prog-bar" id="hub-fire-prog" style="width:0%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="hub-cards">
     <div class="hub-card" data-accent="blue" onclick="showPage('mutuo')">
@@ -434,6 +489,19 @@ input[type=date]:focus { border-color: var(--gold-dim); }
         <div class="hub-tags">
           <span class="hub-tag">REGIME GENERALE</span>
           <span class="hub-tag">CONTRIBUTIVO</span>
+          <span class="hub-tag">DATI REALI</span>
+        </div>
+      </div>
+      <div class="hub-arrow">→</div>
+    </div>
+    <div class="hub-card" data-accent="gold" onclick="showPage('fire')">
+      <div class="hub-icon" data-accent="gold">🔥</div>
+      <div class="hub-body">
+        <div class="hub-name">FIRE Calculator</div>
+        <div class="hub-desc">Quando raggiungi l'indipendenza finanziaria, integrato con INPS e pensione complementare.</div>
+        <div class="hub-tags">
+          <span class="hub-tag">4% SWR</span>
+          <span class="hub-tag">2 SCENARI</span>
           <span class="hub-tag">DATI REALI</span>
         </div>
       </div>
@@ -1026,6 +1094,130 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 </div>
 </div>
 
+<!-- ══════════════════════════════════════════
+     FIRE CALCULATOR
+══════════════════════════════════════════ -->
+<div id="page-fire" class="page">
+<div class="page-inner">
+  <div class="topbar">
+    <button class="topbar-back" onclick="showPage('hub')">← Hub</button>
+    <span class="topbar-badge">FIRE Calculator</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero" style="--hero-glow:rgba(212,168,83,0.08);">
+    <div class="hero-eyebrow">🔥 anno di indipendenza finanziaria</div>
+    <div class="hero-label">scenario integrato · con pensioni INPS &amp; complementare</div>
+    <div class="hero-amount" style="color:var(--gold);text-shadow:0 0 24px rgba(212,168,83,0.35);">
+      <span id="fire-year" style="font-size:56px;letter-spacing:-0.03em;">—</span>
+    </div>
+    <div class="hero-sub"><span id="fire-anni">—</span> anni · età <span id="fire-eta">—</span></div>
+    <div class="hero-range" style="margin-top:0.25rem;">
+      conservativo (senza pensioni) · <em id="fire-year-cons">—</em>
+    </div>
+    <div class="fire-hero-prog-wrap">
+      <div class="fire-hero-prog-bar" id="fire-prog-bar" style="width:0%;"></div>
+    </div>
+    <hr class="hero-divider">
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-val" id="fire-h-num">—</span>
+        <span class="hero-stat-lbl">FIRE number</span>
+      </div>
+      <div class="hero-stat" style="text-align:center;">
+        <span class="hero-stat-val" id="fire-h-pat">—</span>
+        <span class="hero-stat-lbl">patrimonio ora</span>
+      </div>
+      <div class="hero-stat" style="text-align:right;">
+        <span class="hero-stat-val" id="fire-h-pct">—</span>
+        <span class="hero-stat-lbl">completamento</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARAMETRI -->
+  <div class="card">
+    <div class="card-eyebrow">parametri personali</div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">patrimonio attuale</span>
+        <span class="ctrl-value">€ <span id="fire-pat0-out">0</span></span>
+      </div>
+      <input type="range" id="fire-pat0" min="0" max="500000" step="5000" value="0" style="--accent:var(--gold);--accent-dim:var(--gold-dim);">
+      <div class="ctrl-ticks"><span>€ 0</span><span>€ 500k</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">risparmio mensile</span>
+        <span class="ctrl-value">€ <span id="fire-risp-out">500</span></span>
+      </div>
+      <input type="range" id="fire-risp" min="0" max="5000" step="50" value="500" style="--accent:var(--gold);--accent-dim:var(--gold-dim);">
+      <div class="ctrl-ticks"><span>€ 0</span><span>€ 5.000</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">spese mensili target in FIRE</span>
+        <span class="ctrl-value">€ <span id="fire-spese-out">2.500</span></span>
+      </div>
+      <input type="range" id="fire-spese" min="500" max="8000" step="100" value="2500" style="--accent:var(--gold);--accent-dim:var(--gold-dim);">
+      <div class="ctrl-ticks"><span>€ 500</span><span>€ 8.000</span></div>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <span class="ctrl-name">rendimento annuo atteso</span>
+        <span class="ctrl-value"><span id="fire-rate-out">7,0</span><span class="ctrl-unit">%</span></span>
+      </div>
+      <input type="range" id="fire-rate" min="2" max="12" step="0.5" value="7" style="--accent:var(--gold);--accent-dim:var(--gold-dim);">
+      <div class="ctrl-ticks"><span>2%</span><span>12%</span></div>
+    </div>
+  </div>
+
+  <!-- PENSIONI DA CACHE -->
+  <div class="card">
+    <div class="card-eyebrow">pensioni stimate · aggiornate dai simulatori</div>
+    <div class="bk-row">
+      <div class="bk-label">INPS · scenario base</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" id="fire-bar-inps" style="background:var(--green);width:0%;"></div></div>
+      <div class="bk-val" id="fire-inps-pill" style="color:var(--green);">n.d.</div>
+    </div>
+    <div class="bk-row" style="border-bottom:none;">
+      <div class="bk-label">Complementare · scenario base</div>
+      <div class="bk-bar-wrap"><div class="bk-bar" id="fire-bar-pen" style="background:var(--gold);width:0%;"></div></div>
+      <div class="bk-val" id="fire-pen-pill" style="color:var(--gold);">n.d.</div>
+    </div>
+    <div style="font-size:9.5px;color:var(--text-muted);margin-top:0.875rem;line-height:1.6;">Valori letti automaticamente dopo aver visitato i rispettivi simulatori.</div>
+  </div>
+
+  <!-- GRAFICO -->
+  <div class="card">
+    <div class="card-eyebrow">crescita patrimonio vs traguardo FIRE</div>
+    <div class="chart-wrap"><canvas id="fire-chart"></canvas></div>
+    <div class="chart-legend">
+      <div class="leg-item"><span class="leg-line" style="background:var(--blue);"></span>Patrimonio</div>
+      <div class="leg-item"><span class="leg-dash" style="border-color:var(--gold);"></span>FIRE Number</div>
+    </div>
+  </div>
+
+  <!-- COPERTURA SPESE -->
+  <div class="card">
+    <div class="card-eyebrow">copertura spese mensili in FIRE</div>
+    <div id="fire-cov-list"></div>
+    <div class="snap-result" style="margin-top:0.875rem;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">mancano al traguardo</div>
+        <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--gold);">€ <span id="fire-mancano">—</span></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">spese mensili target</div>
+        <div style="font-family:var(--mono);font-size:16px;color:var(--text-dim);">€ <span id="fire-spese-lbl">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">FIRE Number integrato = (spese − pensioni) × 12 × 25 · regola 4% SWR (Trinity Study). FIRE conservativo = spese × 12 × 25 senza pensioni. Pensioni disponibili da 67 anni. Simulazione puramente indicativa, non consulenza finanziaria.</p>
+</div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 'use strict';
@@ -1048,13 +1240,15 @@ function showPage(name) {
     if (name === 'pensione') penInit();
     if (name === 'inps')     iInit();
     if (name === 'pac')      pacInit();
+    if (name === 'fire')     fireInit();
   } else {
     // resize charts on revisit
-    if (name === 'mutuo')    { if (mChart)   mChart.resize();   mRefresh(); }
-    if (name === 'prestito') { if (pChart)   pChart.resize();   pRefresh(); }
-    if (name === 'pensione') { if (penChart) penChart.resize(); penRefresh(); }
-    if (name === 'inps')     { if (iChart)   iChart.resize();   iRefresh(); }
-    if (name === 'pac')      { if (pacChart) pacChart.resize(); if (pacPicPacChart) pacPicPacChart.resize(); pacRefresh(); }
+    if (name === 'mutuo')    { if (mChart)    mChart.resize();    mRefresh(); }
+    if (name === 'prestito') { if (pChart)    pChart.resize();    pRefresh(); }
+    if (name === 'pensione') { if (penChart)  penChart.resize();  penRefresh(); }
+    if (name === 'inps')     { if (iChart)    iChart.resize();    iRefresh(); }
+    if (name === 'pac')      { if (pacChart)  pacChart.resize();  if (pacPicPacChart) pacPicPacChart.resize(); pacRefresh(); }
+    if (name === 'fire')     { if (fireChart) fireChart.resize(); fireRefresh(); }
   }
 }
 
@@ -1528,6 +1722,7 @@ function penRefresh() {
   const base    = results[1];
   const versato = total * months;
   document.getElementById('pen-rend').textContent  = Math.round(base.rend).toLocaleString('it-IT');
+  lsSet('cache_pen_rend', Math.round(base.rend));
   document.getElementById('pen-h-min').textContent = fmtEur(results[0].rend);
   document.getElementById('pen-h-max').textContent = fmtEur(results[2].rend);
   document.getElementById('pen-h-cap').textContent = fmtK(base.cap);
@@ -1654,6 +1849,7 @@ function iRefresh() {
   const mensileBase = (base.mont * coeff) / 13;
 
   document.getElementById('i-rend').textContent  = fmtNum(Math.round(mensileBase));
+  lsSet('cache_inps_rend', Math.round(mensileBase));
   document.getElementById('i-h-min').textContent = fmtEur(Math.round((results[0].mont * coeff) / 13));
   document.getElementById('i-h-max').textContent = fmtEur(Math.round((results[2].mont * coeff) / 13));
   document.getElementById('i-h-mont').textContent = fmtK(Math.round(base.mont));
@@ -2014,6 +2210,177 @@ function pacInit() {
   });
   pacRefresh();
 }
+
+/* ─────────────────────────────────────────────
+   FIRE CALCULATOR
+───────────────────────────────────────────── */
+let fireChart = null;
+const FIRE_BIRTH_YEAR = 1990;
+const FIRE_CUR_YEAR   = 2026;
+
+function fireFV(pat0, risp, months, rAnnuo) {
+  const mr = Math.pow(1 + rAnnuo, 1/12) - 1;
+  if (mr === 0) return pat0 + risp * months;
+  return pat0 * Math.pow(1+mr, months) + risp * ((Math.pow(1+mr, months)-1) / mr);
+}
+
+function fireCalcAnni(pat0, risp, fireNum, r) {
+  if (fireNum <= 0) return 0;
+  if (pat0 >= fireNum) return 0;
+  for (let m = 1; m <= 720; m++) {
+    if (fireFV(pat0, risp, m, r) >= fireNum) return m / 12;
+  }
+  return null;
+}
+
+function showHubFire() {
+  const yr  = lsGet('fire_year', '');
+  const sub = lsGet('fire_sub',  '');
+  const pct = lsNum('fire_pct',   0);
+  const elY = document.getElementById('hub-fire-year');
+  const elS = document.getElementById('hub-fire-sub');
+  const elW = document.getElementById('hub-fire-prog-wrap');
+  const elB = document.getElementById('hub-fire-prog');
+  if (!elY) return;
+  if (yr) {
+    elY.textContent = yr;
+    elY.classList.remove('empty');
+    elS.textContent = sub;
+    elW.style.display = '';
+    elB.style.width = Math.min(100, pct).toFixed(1) + '%';
+  } else {
+    elY.textContent = '—';
+    elY.classList.add('empty');
+    elS.textContent = 'Configura il calcolatore →';
+    elW.style.display = 'none';
+  }
+}
+
+function fireRefresh() {
+  const pat0  = +document.getElementById('fire-pat0').value;
+  const risp  = +document.getElementById('fire-risp').value;
+  const spese = +document.getElementById('fire-spese').value;
+  const r     = +document.getElementById('fire-rate').value / 100;
+  const inps  = lsNum('cache_inps_rend', 0);
+  const pen   = lsNum('cache_pen_rend',  0);
+
+  document.getElementById('fire-pat0-out').textContent  = fmtNum(pat0);
+  document.getElementById('fire-risp-out').textContent  = fmtNum(risp);
+  document.getElementById('fire-spese-out').textContent = fmtNum(spese);
+  document.getElementById('fire-rate-out').textContent  = (+document.getElementById('fire-rate').value).toFixed(1).replace('.', ',');
+  document.getElementById('fire-spese-lbl').textContent = fmtNum(spese);
+
+  // Pensioni pills + barre proporzionali
+  const maxPen = Math.max(inps, pen, 1);
+  document.getElementById('fire-inps-pill').textContent = inps > 0 ? fmtEur(inps) + '/mese' : 'n.d. — visita INPS';
+  document.getElementById('fire-pen-pill').textContent  = pen  > 0 ? fmtEur(pen)  + '/mese' : 'n.d. — visita Pensione';
+  document.getElementById('fire-bar-inps').style.width  = (inps / maxPen * 100).toFixed(0) + '%';
+  document.getElementById('fire-bar-pen').style.width   = (pen  / maxPen * 100).toFixed(0) + '%';
+
+  // FIRE numbers: integrato (con pensioni) e conservativo (senza)
+  const gapMensile  = Math.max(0, spese - inps - pen);
+  const fireNumInt  = gapMensile * 12 * 25;
+  const fireNumCons = spese * 12 * 25;
+
+  const anniInt  = fireCalcAnni(pat0, risp, fireNumInt,  r);
+  const anniCons = fireCalcAnni(pat0, risp, fireNumCons, r);
+
+  const yearInt  = anniInt  !== null ? FIRE_CUR_YEAR + Math.ceil(anniInt)  : null;
+  const yearCons = anniCons !== null ? FIRE_CUR_YEAR + Math.ceil(anniCons) : null;
+  const etaInt   = anniInt  !== null ? Math.round((FIRE_CUR_YEAR - FIRE_BIRTH_YEAR) + anniInt) : null;
+
+  const pct     = fireNumInt > 0 ? Math.min(100, (pat0 / fireNumInt) * 100) : (pat0 > 0 ? 100 : 0);
+  const mancano = Math.max(0, fireNumInt - pat0);
+
+  // Hero
+  document.getElementById('fire-year').textContent      = yearInt  ?? '> 60 anni';
+  document.getElementById('fire-anni').textContent      = anniInt  !== null ? Math.ceil(anniInt) : '—';
+  document.getElementById('fire-eta').textContent       = etaInt   ?? '—';
+  document.getElementById('fire-year-cons').textContent = yearCons ?? '> 60 anni';
+  document.getElementById('fire-h-num').textContent     = fmtK(Math.round(fireNumInt));
+  document.getElementById('fire-h-pat').textContent     = fmtK(pat0);
+  document.getElementById('fire-h-pct').textContent     = pct.toFixed(0) + '%';
+  document.getElementById('fire-prog-bar').style.width  = pct.toFixed(1) + '%';
+  document.getElementById('fire-mancano').textContent   = fmtNum(Math.round(mancano));
+
+  // Copertura spese mensili
+  const coperturaInps = Math.min(spese, inps);
+  const coperturaPen  = Math.min(Math.max(0, spese - coperturaInps), pen);
+  const coperturaCap  = Math.max(0, spese - coperturaInps - coperturaPen);
+  const voci = [
+    { lbl:'INPS',                   val:coperturaInps, color:'var(--green)' },
+    { lbl:'Pensione complementare', val:coperturaPen,  color:'var(--gold)'  },
+    { lbl:'Capitale (SWR 4%)',      val:coperturaCap,  color:'var(--blue)'  },
+  ];
+  document.getElementById('fire-cov-list').innerHTML = voci.map(v => `
+    <div class="fire-cov-row">
+      <div class="fire-cov-dot" style="background:${v.color};"></div>
+      <div class="fire-cov-lbl">${v.lbl}</div>
+      <div class="fire-cov-bar-wrap"><div class="fire-cov-bar" style="background:${v.color};width:${spese>0?(v.val/spese*100).toFixed(1):0}%;"></div></div>
+      <div class="fire-cov-val" style="color:${v.color};">${fmtEur(Math.round(v.val))}</div>
+    </div>`).join('');
+
+  // Salva per hub widget
+  if (yearInt) {
+    lsSet('fire_year', yearInt);
+    lsSet('fire_sub',  Math.ceil(anniInt) + ' anni · età ' + etaInt);
+    lsSet('fire_pct',  pct.toFixed(1));
+    showHubFire();
+  }
+
+  fireRenderChart(pat0, risp, r, fireNumInt, anniInt);
+}
+
+function fireRenderChart(pat0, risp, r, fireNum, anniTarget) {
+  const maxAnni = anniTarget !== null ? Math.ceil(anniTarget) + 8 : 45;
+  const pts     = Array.from({ length: maxAnni + 1 }, (_, i) => i);
+  const labels  = pts.map(a => FIRE_CUR_YEAR + a);
+  const dataGrowth = pts.map(a => Math.round(fireFV(pat0, risp, a * 12, r)));
+  const dataFire   = pts.map(() => Math.round(fireNum));
+  const ax = axisDefaults(), tt = chartTooltipDefaults();
+  if (!fireChart) {
+    fireChart = new Chart(document.getElementById('fire-chart'), {
+      type: 'line',
+      data: { labels, datasets: [
+        { label:'Patrimonio',  data:dataGrowth, borderColor:'#4A8FD4',
+          backgroundColor:'rgba(74,143,212,0.06)', fill:true,
+          borderWidth:2, pointRadius:0, tension:0.3 },
+        { label:'FIRE Number', data:dataFire, borderColor:'#D4A853',
+          backgroundColor:'transparent', borderWidth:1.5,
+          borderDash:[6,3], pointRadius:0, tension:0 },
+      ]},
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        interaction:{ mode:'index', intersect:false },
+        plugins:{ legend:{ display:false }, tooltip:{ ...tt, callbacks:{
+          title: ctx => String(ctx[0].label),
+          label: c  => ` ${c.dataset.label}: ${fmtK(c.parsed.y)}`,
+        }}},
+        scales:{
+          x: { ...ax, ticks:{ ...ax.ticks, maxTicksLimit:8, maxRotation:0 } },
+          y: { ...ax, ticks:{ ...ax.ticks, callback: v => fmtK(v) } },
+        },
+      },
+    });
+  } else {
+    fireChart.data.labels           = labels;
+    fireChart.data.datasets[0].data = dataGrowth;
+    fireChart.data.datasets[1].data = dataFire;
+    fireChart.update('none');
+  }
+}
+
+function fireInit() {
+  ['fire-pat0','fire-risp','fire-spese','fire-rate'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = lsGet(id, el.value);
+    updateGradient(el);
+    el.addEventListener('input', () => { lsSet(id, el.value); updateGradient(el); fireRefresh(); });
+  });
+  fireRefresh();
+}
+
+document.addEventListener('DOMContentLoaded', showHubFire);
 </script>
 </body>
 </html>
