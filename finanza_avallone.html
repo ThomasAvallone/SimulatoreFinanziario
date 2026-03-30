@@ -843,7 +843,55 @@ input[type=date]:focus { border-color: var(--gold-dim); }
     </div>
   </div>
 
-  <p class="note">Inizio versamenti: 06/02/2025 · Nato il 22/01/1990 · TFR residuo in azienda: €3.799,44 (dalla CU, incluso nella proiezione). Rendimenti nominali lordi basati sulla distribuzione storica MSCI World 1970–2024. Scenario conservativo 5%, base 8%, ottimistico 11%. Rendita calcolata con regola 4% SWR (Trinity Study). Valore reale calcolato come capitale nominale / (1 + inflazione)^anni. Simulazione puramente indicativa, non consulenza finanziaria.</p>
+  <div class="card">
+    <div class="card-eyebrow">posizione reale · Allianz Linea Azionaria · 31/12/2025</div>
+    <div class="bk-row">
+      <div class="bk-label">Posizione individuale</div>
+      <div class="bk-val" style="color:var(--gold);">€ 931,24</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">TFR versato 2025</div>
+      <div class="bk-val">€ 469,77</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">Volontario versato 2025</div>
+      <div class="bk-val">€ 450,00</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">Rendimento 2025</div>
+      <div class="bk-val" style="color:var(--green);">+11,81%</div>
+    </div>
+    <div class="bk-row">
+      <div class="bk-label">Valore quota</div>
+      <div class="bk-val">32,948</div>
+    </div>
+    <div class="bk-row" style="border-bottom:none;">
+      <div class="bk-label">Quote possedute</div>
+      <div class="bk-val">28,264</div>
+    </div>
+    <div class="card-eyebrow" style="margin-top:1rem;">performance storica · media annua composta</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.5rem;margin-top:0.625rem;">
+      <div style="text-align:center;padding:0.5rem 0;">
+        <div style="font-family:var(--mono);font-size:15px;font-weight:500;color:var(--green);">+11,81%</div>
+        <div style="font-size:9px;color:var(--text-muted);margin-top:3px;letter-spacing:0.06em;">1 anno</div>
+      </div>
+      <div style="text-align:center;padding:0.5rem 0;">
+        <div style="font-family:var(--mono);font-size:15px;font-weight:500;color:var(--green);">+13,98%</div>
+        <div style="font-size:9px;color:var(--text-muted);margin-top:3px;letter-spacing:0.06em;">3 anni</div>
+      </div>
+      <div style="text-align:center;padding:0.5rem 0;">
+        <div style="font-family:var(--mono);font-size:15px;font-weight:500;color:var(--gold);">+8,25%</div>
+        <div style="font-size:9px;color:var(--text-muted);margin-top:3px;letter-spacing:0.06em;">5 anni</div>
+      </div>
+      <div style="text-align:center;padding:0.5rem 0;">
+        <div style="font-family:var(--mono);font-size:15px;font-weight:500;color:var(--text-dim);">+6,54%</div>
+        <div style="font-size:9px;color:var(--text-muted);margin-top:3px;letter-spacing:0.06em;">10 anni</div>
+      </div>
+    </div>
+    <div style="font-size:9.5px;color:var(--text-muted);margin-top:0.875rem;line-height:1.6;">La proiezione parte dal montante reale di €931,24 (31/12/2025), a cui si aggiungono i versamenti futuri dal 01/01/2026 e il TFR residuo in azienda di €3.799,44.</div>
+  </div>
+
+  <p class="note">Montante reale al 31/12/2025: €931,24 (Allianz Linea Azionaria). Proiezione dal 01/01/2026 · Nato il 22/01/1990 · TFR residuo in azienda: €3.799,44 (da CU). Rendimenti nominali lordi. Scenario conservativo 5%, base 8%, ottimistico 11%. Rendita calcolata con regola 4% SWR (Trinity Study). Simulazione puramente indicativa, non consulenza finanziaria.</p>
 </div>
 </div>
 
@@ -1530,10 +1578,11 @@ function pInit() {
 ───────────────────────────────────────────── */
 let penChart = null;
 
-const PEN_START       = new Date(2025, 1, 6);
-const PEN_BIRTH       = new Date(1990, 0, 22);
-const PEN_TFR         = 96.71;
-const PEN_TFR_RESIDUO = 3799.44;   // TFR residuo in azienda da CU
+const PEN_START          = new Date(2026, 0, 1);     // base calcolo: posizione reale 31/12/2025
+const PEN_BIRTH          = new Date(1990, 0, 22);
+const PEN_TFR            = 96.71;
+const PEN_TFR_RESIDUO    = 3799.44;                  // TFR residuo in azienda (da CU)
+const PEN_MONTANTE_REALE = 931.24;                   // posizione individuale reale al 31/12/2025
 const PEN_DED_MAX     = 5164.57;   // limite deducibilità annua IRPEF
 let   penIRPEF        = 0.35;      // scaglione default 35%
 const PEN_SC = [
@@ -1575,7 +1624,7 @@ function penRenderSnap(total, dateStr) {
   const m = Math.max(0, penMB(PEN_START, d));
   const results = PEN_SC.map(s => {
     const mr = penMR(s.rate);
-    const cap = penFV(total, m, mr) + PEN_TFR_RESIDUO * Math.pow(1 + mr, m);
+    const cap = penFV(total, m, mr) + (PEN_MONTANTE_REALE + PEN_TFR_RESIDUO) * Math.pow(1 + mr, m);
     return { ...s, cap };
   });
   meta.innerHTML = `<strong>${d.toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'})}</strong> · età ${penAgeAt(d)} anni · ${m} mesi · tot. versato ${fmtEur(total*m)}`;
@@ -1602,7 +1651,7 @@ function penRenderChart(total, retAge) {
   const ax = axisDefaults(), tt = chartTooltipDefaults();
   const datasets = PEN_SC.map(s => ({
     label: s.label,
-    data: pts.map(m => penFV(total, m, penMR(s.rate))),
+    data: pts.map(m => { const mr = penMR(s.rate); return penFV(total, m, mr) + (PEN_MONTANTE_REALE + PEN_TFR_RESIDUO) * Math.pow(1+mr, m); }),
     borderColor: s.color, backgroundColor:'transparent', borderWidth:2, pointRadius:0, tension:0.3,
   }));
   datasets.push({ label:'versato', data:pts.map(m=>total*m), borderColor:'rgba(234,229,216,0.18)', backgroundColor:'transparent', borderWidth:1.5, borderDash:[5,5], pointRadius:0, tension:0 });
@@ -1715,7 +1764,7 @@ function penRefresh() {
   const results = PEN_SC.map(s => {
     const mr  = penMR(s.rate);
     const cap = penFV(total, months, mr)
-              + PEN_TFR_RESIDUO * Math.pow(1 + mr, months);
+              + (PEN_MONTANTE_REALE + PEN_TFR_RESIDUO) * Math.pow(1 + mr, months);
     return { ...s, cap, rend: (cap * 0.04) / 12 };
   });
 
