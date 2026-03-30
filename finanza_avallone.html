@@ -2233,6 +2233,35 @@ function fireCalcAnni(pat0, risp, fireNum, r) {
   return null;
 }
 
+// Capitale necessario a una data età FIRE (calcolo a 2 fasi)
+// Fase 1 (FIRE → 67): copre spese intere, nessuna pensione ancora disponibile
+// Fase 2 (67+):       copre solo il gap (spese − pensioni) con SWR 4%
+function fireNumberAtAge(spese, inps, pen, r, fireAge) {
+  const gap = Math.max(0, 67 - fireAge);
+  const C67 = Math.max(0, (spese - inps - pen) * 12) * 25;
+  if (gap <= 0) return C67;
+  if (r === 0) return spese * 12 * gap + C67;
+  const annuity = (spese * 12 / r) * (1 - Math.pow(1 + r, -gap));
+  return annuity + C67 / Math.pow(1 + r, gap);
+}
+
+// Trova età FIRE e capitale necessario per convergenza iterativa
+function fireCalcTwoPhase(pat0, risp, spese, inps, pen, r) {
+  const curAge = FIRE_CUR_YEAR - FIRE_BIRTH_YEAR;
+  let fireAge = 50;
+  for (let i = 0; i < 25; i++) {
+    const fn   = fireNumberAtAge(spese, inps, pen, r, fireAge);
+    const anni = fireCalcAnni(pat0, risp, fn, r);
+    if (anni === null) return null;
+    const newAge = curAge + anni;
+    if (Math.abs(newAge - fireAge) < 0.2) return { anni, fireNum: fn };
+    fireAge = 0.5 * newAge + 0.5 * fireAge;
+  }
+  const fn   = fireNumberAtAge(spese, inps, pen, r, fireAge);
+  const anni = fireCalcAnni(pat0, risp, fn, r);
+  return anni !== null ? { anni, fireNum: fn } : null;
+}
+
 function showHubFire() {
   const yr  = lsGet('fire_year', '');
   const sub = lsGet('fire_sub',  '');
@@ -2277,19 +2306,20 @@ function fireRefresh() {
   document.getElementById('fire-bar-inps').style.width  = (inps / maxPen * 100).toFixed(0) + '%';
   document.getElementById('fire-bar-pen').style.width   = (pen  / maxPen * 100).toFixed(0) + '%';
 
-  // FIRE numbers: integrato (con pensioni) e conservativo (senza)
-  const gapMensile  = Math.max(0, spese - inps - pen);
-  const fireNumInt  = gapMensile * 12 * 25;
-  const fireNumCons = spese * 12 * 25;
+  // FIRE integrato: calcolo a 2 fasi (pre-pensione + post-pensione)
+  const resultInt   = fireCalcTwoPhase(pat0, risp, spese, inps, pen, r);
+  const fireNumInt  = resultInt ? resultInt.fireNum : 0;
+  const anniInt     = resultInt ? resultInt.anni    : null;
 
-  const anniInt  = fireCalcAnni(pat0, risp, fireNumInt,  r);
-  const anniCons = fireCalcAnni(pat0, risp, fireNumCons, r);
+  // FIRE conservativo: senza pensioni, solo capitale
+  const fireNumCons = spese * 12 * 25;
+  const anniCons    = fireCalcAnni(pat0, risp, fireNumCons, r);
 
   const yearInt  = anniInt  !== null ? FIRE_CUR_YEAR + Math.ceil(anniInt)  : null;
   const yearCons = anniCons !== null ? FIRE_CUR_YEAR + Math.ceil(anniCons) : null;
   const etaInt   = anniInt  !== null ? Math.round((FIRE_CUR_YEAR - FIRE_BIRTH_YEAR) + anniInt) : null;
 
-  const pct     = fireNumInt > 0 ? Math.min(100, (pat0 / fireNumInt) * 100) : (pat0 > 0 ? 100 : 0);
+  const pct     = fireNumInt > 0 ? Math.min(100, (pat0 / fireNumInt) * 100) : 0;
   const mancano = Math.max(0, fireNumInt - pat0);
 
   // Hero
