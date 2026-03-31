@@ -3157,35 +3157,8 @@ function profileRefresh() {
     fpW.style.display = 'none';
   }
 
-  // Impegni finanziari
-  const mImp = lsNum('m-imp', 0);
-  const pImp = lsNum('p-imp', 0);
-  const rows = [];
-  if (mImp > 0) {
-    const mDur = lsNum('m-dur', 20), mTasso = lsNum('m-tasso', 3);
-    const rata = profCalcRataMutuo(mImp, mTasso, mDur);
-    rows.push(`<div class="bk-row${pImp > 0 ? '' : '" style="border-bottom:none'}">
-      <div style="flex:1">
-        <div class="bk-label">Mutuo</div>
-        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${fmtEur(mImp)} · ${mDur} anni · ${mTasso.toFixed(2).replace('.',',')}% p.a.</div>
-      </div>
-      <div class="bk-val" style="color:var(--blue);">${fmtEur(Math.round(rata))}/mese</div>
-    </div>`);
-  }
-  if (pImp > 0) {
-    const pDur = lsNum('p-dur', 36), pTan = lsNum('p-tan', 7);
-    const rata = profCalcRataPrestito(pImp, pTan, pDur);
-    rows.push(`<div class="bk-row" style="border-bottom:none">
-      <div style="flex:1">
-        <div class="bk-label">Prestito personale</div>
-        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${fmtEur(pImp)} · ${pDur} mesi · TAN ${pTan.toFixed(2).replace('.',',')}%</div>
-      </div>
-      <div class="bk-val" style="color:var(--orange);">${fmtEur(Math.round(rata))}/mese</div>
-    </div>`);
-  }
-  const impCard = document.getElementById('prof-impegni-card');
-  impCard.style.display = rows.length > 0 ? '' : 'none';
-  if (rows.length > 0) document.getElementById('prof-impegni-list').innerHTML = rows.join('');
+  // Impegni finanziari (lista da profilo, indipendente dai simulatori)
+  profRenderImpegniCard();
 
   // PAC
   const pacCap0 = lsNum('pac-cap0', 0), pacPmt = lsNum('pac-pmt', 0);
@@ -3234,6 +3207,154 @@ function profileInit() {
 ───────────────────────────────────────────── */
 const PROF_TAX_RATE = 0.30; // forfait IRPEF + contributi per RAL ~30k
 let   profScoreVal  = 0;    // cache score per Gemini context
+
+const TIPI_IMPEGNO = ['Affitto','Mutuo casa','Prestito auto','Prestito personale','Finanziamento','Leasing','Altro'];
+
+function profGetImpegni()     { try { return JSON.parse(lsGet('prof_impegni','[]')); } catch(e) { return []; } }
+function profSaveImpegni(arr) { lsSet('prof_impegni', JSON.stringify(arr)); }
+function profTotaleRate()     { return profGetImpegni().reduce((s,i) => s + (Number(i.rata)||0), 0); }
+
+function profCalcResiduo(item) {
+  const r = Number(item.rata) || 0;
+  const t = Number(item.tasso) || 0;
+  const n = Number(item.mesi_rimanenti) || 0;
+  if (!r || !n) return null;
+  if (t > 0) {
+    const mr = t / 100 / 12;
+    return r * (1 - Math.pow(1 + mr, -n)) / mr;
+  }
+  return r * n;
+}
+
+function profShowToast(msg) {
+  const t = document.getElementById('app-toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function profRenderImpegniCard() {
+  const list   = profGetImpegni();
+  const listEl = document.getElementById('prof-impegni-list');
+  if (!listEl) return;
+  if (list.length === 0) {
+    listEl.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:0.5rem 0 0.25rem;">Nessun impegno inserito.</div>';
+    return;
+  }
+  listEl.innerHTML = list.map((imp, idx) => {
+    const tipo    = imp.tipo === 'Altro' && imp.altro ? imp.altro : imp.tipo;
+    const residuo = imp.tipo === 'Affitto' ? null : profCalcResiduo(imp);
+    const parts   = [];
+    if (Number(imp.tasso) > 0)          parts.push(Number(imp.tasso).toFixed(2).replace('.',',') + '%');
+    if (Number(imp.mesi_rimanenti) > 0)  parts.push(imp.mesi_rimanenti + ' mesi');
+    if (residuo !== null)                parts.push('residuo ~' + fmtK(Math.round(residuo)));
+    if (Number(imp.giorno_addebito) > 0) parts.push('giorno ' + imp.giorno_addebito);
+    const details = parts.join(' · ');
+    const isLast  = idx === list.length - 1;
+    const safeId  = String(imp.id).replace(/'/g, "\\'");
+    return `<div class="imp-row${isLast ? ' last' : ''}">
+      <div class="imp-row-body">
+        <div class="imp-row-tipo">${tipo}</div>
+        ${details ? `<div class="imp-row-details">${details}</div>` : ''}
+      </div>
+      <div class="imp-row-rata" style="color:var(--blue);">${fmtEur(Math.round(Number(imp.rata)))}/mese</div>
+      <div class="imp-row-actions">
+        <button class="imp-action-btn" onclick="profImpegniOpenForm('${safeId}')" title="Modifica">✏</button>
+        <button class="imp-action-btn" onclick="profImpegniDelete('${safeId}')" title="Elimina" style="color:var(--red);">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function profImpFormToggleFields() {
+  const tipo      = document.getElementById('prof-imp-tipo').value;
+  const isAffitto = tipo === 'Affitto';
+  const isAltro   = tipo === 'Altro';
+  document.getElementById('prof-imp-debt-fields').style.display = isAffitto ? 'none' : '';
+  document.getElementById('prof-imp-altro-wrap').style.display  = isAltro   ? ''     : 'none';
+  document.getElementById('prof-imp-preview').style.display     = 'none';
+}
+
+function profImpFormPreview() {
+  const tipo = document.getElementById('prof-imp-tipo').value;
+  if (tipo === 'Affitto') return;
+  const rata    = parseFloat(document.getElementById('prof-imp-rata').value)    || 0;
+  const tasso   = parseFloat(document.getElementById('prof-imp-tasso').value)   || 0;
+  const mesi    = parseInt(document.getElementById('prof-imp-mesi').value)      || 0;
+  const prev    = document.getElementById('prof-imp-preview');
+  const residuo = profCalcResiduo({ rata, tasso, mesi_rimanenti: mesi });
+  if (residuo !== null && residuo > 0) {
+    prev.textContent   = 'residuo stimato ~' + fmtK(Math.round(residuo));
+    prev.style.display = '';
+  } else {
+    prev.style.display = 'none';
+  }
+}
+
+function profImpegniOpenForm(id) {
+  const form = document.getElementById('prof-imp-form');
+  document.getElementById('prof-imp-tipo').value    = 'Affitto';
+  document.getElementById('prof-imp-rata').value    = '';
+  document.getElementById('prof-imp-giorno').value  = '';
+  document.getElementById('prof-imp-importo').value = '';
+  document.getElementById('prof-imp-tasso').value   = '';
+  document.getElementById('prof-imp-mesi').value    = '';
+  document.getElementById('prof-imp-altro').value   = '';
+  document.getElementById('prof-imp-edit-id').value = '';
+  document.getElementById('prof-imp-preview').style.display = 'none';
+
+  if (id) {
+    const item = profGetImpegni().find(i => String(i.id) === String(id));
+    if (item) {
+      document.getElementById('prof-imp-tipo').value    = item.tipo    || 'Affitto';
+      document.getElementById('prof-imp-rata').value    = item.rata    || '';
+      document.getElementById('prof-imp-giorno').value  = item.giorno_addebito || '';
+      document.getElementById('prof-imp-importo').value = item.importo || '';
+      document.getElementById('prof-imp-tasso').value   = item.tasso   || '';
+      document.getElementById('prof-imp-mesi').value    = item.mesi_rimanenti || '';
+      document.getElementById('prof-imp-altro').value   = item.altro   || '';
+      document.getElementById('prof-imp-edit-id').value = item.id;
+    }
+  }
+  profImpFormToggleFields();
+  form.classList.add('open');
+  form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function profImpegniCloseForm() {
+  document.getElementById('prof-imp-form').classList.remove('open');
+}
+
+function profImpegniSave() {
+  const rata = parseFloat(document.getElementById('prof-imp-rata').value);
+  if (!rata || rata <= 0) { document.getElementById('prof-imp-rata').focus(); return; }
+  const tipo   = document.getElementById('prof-imp-tipo').value;
+  const editId = document.getElementById('prof-imp-edit-id').value;
+  const voce   = {
+    id:              editId || String(Date.now()),
+    tipo,
+    altro:           tipo === 'Altro' ? document.getElementById('prof-imp-altro').value.trim() : '',
+    rata,
+    importo:         parseFloat(document.getElementById('prof-imp-importo').value) || 0,
+    tasso:           parseFloat(document.getElementById('prof-imp-tasso').value)   || 0,
+    mesi_rimanenti:  parseInt(document.getElementById('prof-imp-mesi').value)      || 0,
+    giorno_addebito: parseInt(document.getElementById('prof-imp-giorno').value)    || 0,
+  };
+  let list = profGetImpegni();
+  if (editId) { list = list.map(i => String(i.id) === editId ? voce : i); }
+  else        { list.push(voce); }
+  profSaveImpegni(list);
+  profImpegniCloseForm();
+  profRenderImpegniCard();
+  profAnalisiRefresh();
+}
+
+function profImpegniDelete(id) {
+  profSaveImpegni(profGetImpegni().filter(i => String(i.id) !== String(id)));
+  profRenderImpegniCard();
+  profAnalisiRefresh();
+}
 
 function profAnalisiRefresh() {
   const ral      = lsNum('i-ral', 30316);
