@@ -524,6 +524,116 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 .chat-send-btn:hover { background: rgba(212,168,83,0.12); }
 .chat-send-btn:disabled { opacity: 0.4; cursor: default; }
 
+/* ── teal per risparmio ── */
+:root { --teal: #4AB8A0; --teal-dim: rgba(74,184,160,0.55); --teal-bg: rgba(74,184,160,0.07); }
+
+/* ── Prof card header ── */
+.prof-card-title {
+  font-size: 16px; font-weight: 500; color: var(--text);
+  letter-spacing: -0.01em; margin-bottom: 2px;
+}
+.prof-card-sub {
+  font-family: var(--mono); font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1rem;
+}
+
+/* ── Impegni lista ── */
+.imp-row {
+  display: flex; align-items: flex-start; gap: 0.5rem;
+  padding: 0.75rem 0; border-bottom: 0.5px solid var(--border);
+}
+.imp-row:last-of-type { border-bottom: none; }
+.imp-row-body { flex: 1; min-width: 0; }
+.imp-row-tipo { font-size: 13px; color: var(--text); font-weight: 500; }
+.imp-row-details { font-family: var(--mono); font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.imp-row-rata { font-family: var(--mono); font-size: 13px; font-weight: 600; white-space: nowrap; }
+.imp-row-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.imp-action-btn {
+  background: none; border: 0.5px solid var(--border-str); border-radius: 6px;
+  color: var(--text-muted); cursor: pointer; padding: 3px 7px; font-size: 12px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.imp-action-btn:hover { color: var(--text); border-color: var(--text-muted); }
+.imp-add-btn {
+  width: 100%; margin-top: 0.75rem; padding: 0.5rem;
+  background: none; border: 0.5px dashed var(--border-str); border-radius: 8px;
+  color: var(--text-muted); font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.06em; cursor: pointer; transition: color 0.15s, border-color 0.15s;
+}
+.imp-add-btn:hover { color: var(--text); border-color: var(--text-dim); }
+
+/* ── Impegni form inline ── */
+.imp-form {
+  background: var(--bg-card-alt); border-radius: 10px;
+  border: 0.5px solid var(--border-str); padding: 1rem;
+  margin-top: 0.75rem; display: none; flex-direction: column; gap: 0.625rem;
+}
+.imp-form.open { display: flex; }
+.imp-form-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.imp-form-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 120px; }
+.imp-form-group.full { flex: 100%; min-width: 0; }
+.imp-form-label { font-family: var(--mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; }
+.imp-form-input {
+  background: var(--bg); border: 0.5px solid var(--border-str); border-radius: 6px;
+  padding: 0.4rem 0.6rem; color: var(--text); font-family: var(--mono);
+  font-size: 12px; outline: none; width: 100%;
+}
+.imp-form-input:focus { border-color: rgba(212,168,83,0.4); }
+.imp-form-select {
+  background: var(--bg); border: 0.5px solid var(--border-str); border-radius: 6px;
+  padding: 0.4rem 0.6rem; color: var(--text); font-family: var(--mono);
+  font-size: 12px; outline: none; width: 100%; cursor: pointer;
+}
+.imp-form-preview {
+  font-family: var(--mono); font-size: 11px; color: var(--text-muted);
+  padding: 0.375rem 0.5rem; background: var(--bg);
+  border-radius: 6px; border: 0.5px solid var(--border);
+}
+.imp-form-btns { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.25rem; }
+.imp-form-save {
+  background: var(--gold-bg); border: 0.5px solid var(--gold-dim); border-radius: 8px;
+  color: var(--gold); cursor: pointer; padding: 0.4rem 1rem;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+}
+.imp-form-save:hover { background: rgba(212,168,83,0.12); }
+.imp-form-cancel {
+  background: none; border: 0.5px solid var(--border-str); border-radius: 8px;
+  color: var(--text-muted); cursor: pointer; padding: 0.4rem 0.75rem;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+}
+
+/* ── Gemini sezioni strutturate ── */
+.gem-section { margin-bottom: 1.25rem; }
+.gem-section:last-child { margin-bottom: 0; }
+.gem-section-header {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.375rem;
+}
+.gem-section-divider { height: 1px; background: var(--border); margin-bottom: 0.5rem; }
+.gem-section-body { font-size: 13px; line-height: 1.7; color: var(--text-dim); }
+
+/* ── Bridge simulatori ── */
+.sim-to-profilo-btn {
+  display: block; width: 100%; margin-top: 0.5rem;
+  padding: 0.5rem; text-align: center;
+  background: none; border: 0.5px dashed var(--border-str); border-radius: 8px;
+  color: var(--text-muted); font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.06em; cursor: pointer; transition: color 0.15s, border-color 0.15s;
+}
+.sim-to-profilo-btn:hover { color: var(--text); border-color: var(--text-dim); }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(8px);
+  background: var(--bg-card); border: 0.5px solid var(--green-dim);
+  color: var(--green); font-family: var(--mono); font-size: 12px;
+  padding: 0.5rem 1.25rem; border-radius: 20px; pointer-events: none;
+  opacity: 0; transition: opacity 0.2s, transform 0.2s; z-index: 999;
+  letter-spacing: 0.06em;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
 /* PIC vs PAC comparison grid */
 .picpac-cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 
@@ -1347,7 +1457,8 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 
   <!-- ANAGRAFICA -->
   <div class="card">
-    <div class="card-eyebrow">anagrafica</div>
+    <div class="prof-card-title">Thomas Avallone</div>
+    <div class="prof-card-sub">profilo personale</div>
     <div class="prof-name">Thomas Avallone</div>
     <div class="prof-age" id="prof-age-line">36 anni · nato il 22/01/1990</div>
     <div class="bk-row" style="border-top:0.5px solid var(--border);padding-top:0.75rem;border-bottom:none;">
@@ -1358,7 +1469,8 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 
   <!-- PREVIDENZA -->
   <div class="card">
-    <div class="card-eyebrow">previdenza pubblica &amp; complementare</div>
+    <div class="prof-card-title">pensione stimata</div>
+    <div class="prof-card-sub">INPS · complementare</div>
     <div class="bk-row">
       <div class="bk-label">INPS · scenario base</div>
       <div class="bk-bar-wrap"><div class="bk-bar" id="prof-bar-inps" style="background:var(--green);width:0%;"></div></div>
@@ -1387,7 +1499,8 @@ input[type=date]:focus { border-color: var(--gold-dim); }
   <!-- FIRE -->
   <div class="card" style="border-color:rgba(212,168,83,0.15);position:relative;overflow:hidden;">
     <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;pointer-events:none;background:radial-gradient(circle,rgba(212,168,83,0.06) 0%,transparent 70%);"></div>
-    <div class="card-eyebrow">🔥 FIRE · indipendenza finanziaria</div>
+    <div class="prof-card-title">indipendenza finanziaria</div>
+    <div class="prof-card-sub">🔥 FIRE · obiettivo · completamento</div>
     <div class="prof-fire-year" id="prof-fire-year">—</div>
     <div class="prof-fire-sub" id="prof-fire-sub">Configura il FIRE Calculator →</div>
     <div class="fire-prog-wrap" id="prof-fire-prog-wrap" style="display:none;">
@@ -1395,15 +1508,74 @@ input[type=date]:focus { border-color: var(--gold-dim); }
     </div>
   </div>
 
-  <!-- IMPEGNI FINANZIARI (visibile solo se configurati) -->
-  <div class="card" id="prof-impegni-card" style="display:none;">
-    <div class="card-eyebrow">impegni finanziari attivi</div>
+  <!-- IMPEGNI FINANZIARI -->
+  <div class="card" id="prof-impegni-card">
+    <div class="prof-card-title">impegni finanziari</div>
+    <div class="prof-card-sub">debiti e rate attive</div>
     <div id="prof-impegni-list"></div>
+    <button class="imp-add-btn" onclick="profImpegniOpenForm()">+ aggiungi impegno</button>
+    <div class="imp-form" id="prof-imp-form">
+      <div class="imp-form-row">
+        <div class="imp-form-group full">
+          <label class="imp-form-label">tipo</label>
+          <select class="imp-form-select" id="prof-imp-tipo" onchange="profImpFormToggleFields()">
+            <option>Affitto</option>
+            <option>Mutuo casa</option>
+            <option>Prestito auto</option>
+            <option>Prestito personale</option>
+            <option>Finanziamento</option>
+            <option>Leasing</option>
+            <option>Altro</option>
+          </select>
+        </div>
+        <div class="imp-form-group full" id="prof-imp-altro-wrap" style="display:none;">
+          <label class="imp-form-label">descrizione</label>
+          <input type="text" class="imp-form-input" id="prof-imp-altro" placeholder="es. Finanziamento cucina">
+        </div>
+      </div>
+      <div class="imp-form-row">
+        <div class="imp-form-group">
+          <label class="imp-form-label">rata mensile *</label>
+          <input type="number" class="imp-form-input" id="prof-imp-rata" min="1" step="1" placeholder="650" oninput="profImpFormPreview()">
+        </div>
+        <div class="imp-form-group">
+          <label class="imp-form-label">giorno addebito</label>
+          <input type="number" class="imp-form-input" id="prof-imp-giorno" min="1" max="28" step="1" placeholder="15">
+        </div>
+      </div>
+      <div id="prof-imp-debt-fields">
+        <div class="imp-form-row">
+          <div class="imp-form-group">
+            <label class="imp-form-label">importo finanziato</label>
+            <input type="number" class="imp-form-input" id="prof-imp-importo" min="0" step="100" placeholder="120000" oninput="profImpFormPreview()">
+          </div>
+          <div class="imp-form-group">
+            <label class="imp-form-label">tasso annuo %</label>
+            <input type="number" class="imp-form-input" id="prof-imp-tasso" min="0" step="0.1" placeholder="3.5" oninput="profImpFormPreview()">
+          </div>
+        </div>
+        <div class="imp-form-row">
+          <div class="imp-form-group">
+            <label class="imp-form-label">mesi rimanenti</label>
+            <input type="number" class="imp-form-input" id="prof-imp-mesi" min="1" step="1" placeholder="240" oninput="profImpFormPreview()">
+          </div>
+          <div class="imp-form-group" style="justify-content:flex-end;align-items:flex-end;">
+            <div class="imp-form-preview" id="prof-imp-preview" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" id="prof-imp-edit-id">
+      <div class="imp-form-btns">
+        <button class="imp-form-cancel" onclick="profImpegniCloseForm()">Annulla</button>
+        <button class="imp-form-save" onclick="profImpegniSave()">Salva</button>
+      </div>
+    </div>
   </div>
 
   <!-- PAC (visibile solo se configurato) -->
   <div class="card" id="prof-pac-card" style="display:none;">
-    <div class="card-eyebrow">piano di accumulo · PAC/PIC</div>
+    <div class="prof-card-title">piano di accumulo</div>
+    <div class="prof-card-sub">PAC/PIC · capitale stimato · scenario base</div>
     <div id="prof-pac-body"></div>
   </div>
 
@@ -1411,10 +1583,12 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 
   <!-- CARD: Cash flow mensile -->
   <div class="card">
-    <div class="card-eyebrow">💸 cash flow mensile stimato</div>
+    <div class="prof-card-title">cash flow mensile</div>
+    <div class="prof-card-sub">stima netto disponibile</div>
     <div class="cf-bar-wrap">
       <div class="cf-bar-seg" id="prof-cf-seg-imp"  style="background:var(--blue);width:0%;"></div>
-      <div class="cf-bar-seg" id="prof-cf-seg-risp" style="background:var(--gold);width:0%;"></div>
+      <div class="cf-bar-seg" id="prof-cf-seg-prev" style="background:var(--gold);width:0%;"></div>
+      <div class="cf-bar-seg" id="prof-cf-seg-risp" style="background:var(--teal);width:0%;"></div>
       <div class="cf-bar-seg" id="prof-cf-seg-disp" style="background:var(--green);width:0%;"></div>
     </div>
     <div class="cf-bar-labels">
@@ -1423,8 +1597,12 @@ input[type=date]:focus { border-color: var(--gold-dim); }
         <span class="cf-bar-val" id="prof-cf-val-imp" style="color:var(--blue);">—</span>
       </div>
       <div class="cf-bar-col">
-        <div class="cf-bar-lbl" style="color:rgba(212,168,83,0.6);">risparmio</div>
-        <span class="cf-bar-val" id="prof-cf-val-risp" style="color:var(--gold);">—</span>
+        <div class="cf-bar-lbl" style="color:rgba(212,168,83,0.6);">previdenza</div>
+        <span class="cf-bar-val" id="prof-cf-val-prev" style="color:var(--gold);">—</span>
+      </div>
+      <div class="cf-bar-col">
+        <div class="cf-bar-lbl" style="color:var(--teal-dim);">risparmio</div>
+        <span class="cf-bar-val" id="prof-cf-val-risp" style="color:var(--teal);">—</span>
       </div>
       <div class="cf-bar-col">
         <div class="cf-bar-lbl" style="color:var(--green-dim);">disponibile</div>
@@ -1438,7 +1616,8 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 
   <!-- CARD: Tasso di risparmio -->
   <div class="card">
-    <div class="card-eyebrow">📈 tasso di risparmio</div>
+    <div class="prof-card-title">tasso di risparmio</div>
+    <div class="prof-card-sub">obiettivo 20% del netto</div>
     <div style="display:flex;align-items:baseline;gap:0.5rem;margin-top:0.375rem;">
       <div class="an-big-pct" id="prof-sr-pct">—</div>
       <div class="an-benchmark">obiettivo: 20%</div>
@@ -1453,7 +1632,8 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 
   <!-- CARD: Gap previdenziale -->
   <div class="card">
-    <div class="card-eyebrow">🏦 gap previdenziale</div>
+    <div class="prof-card-title">gap previdenziale</div>
+    <div class="prof-card-sub">reddito oggi vs pensione</div>
     <div class="gap-row">
       <div class="gap-col">
         <div class="gap-col-lbl">REDDITO OGGI</div>
@@ -1478,7 +1658,8 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 
   <!-- CARD: Ottimizzazione IRPEF -->
   <div class="card">
-    <div class="card-eyebrow">🧾 ottimizzazione fiscale · IRPEF</div>
+    <div class="prof-card-title">ottimizzazione fiscale</div>
+    <div class="prof-card-sub">deducibilità fondo pensione · IRPEF</div>
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:0.5rem;">
       <span style="font-size:12px;color:var(--text-dim);">contributo volontario annuo</span>
       <span style="font-family:var(--mono);font-size:13px;" id="prof-irpef-vol">—</span>
@@ -1497,7 +1678,8 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 
   <!-- CARD: Score salute finanziaria -->
   <div class="card">
-    <div class="card-eyebrow">🩺 score salute finanziaria</div>
+    <div class="prof-card-title">salute finanziaria</div>
+    <div class="prof-card-sub">score composito 0–100</div>
     <div class="score-circle-wrap">
       <div class="score-circle" id="prof-score-circle">
         <span class="score-circle-num" id="prof-score-num">—</span>
@@ -1533,7 +1715,8 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 
   <!-- CARD: API Key -->
   <div class="card">
-    <div class="card-eyebrow">🔑 gemini api key</div>
+    <div class="prof-card-title">Gemini API key</div>
+    <div class="prof-card-sub">configurazione · salvata localmente</div>
     <div style="font-size:12px;color:var(--text-muted);margin-top:0.25rem;line-height:1.5;">
       La chiave viene salvata solo su questo dispositivo. Mai trasmessa ad altri servizi.
     </div>
@@ -1547,7 +1730,8 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 
   <!-- CARD: Briefing AI -->
   <div class="card">
-    <div class="card-eyebrow">🤖 analisi AI · Gemini</div>
+    <div class="prof-card-title">analisi AI</div>
+    <div class="prof-card-sub">🤖 Gemini · briefing finanziario personale</div>
     <div class="gemini-cta" id="prof-briefing-cta" style="display:none;">
       Inserisci l'API key Gemini per abilitare l'analisi AI
     </div>
@@ -1561,7 +1745,8 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 
   <!-- CARD: Chat contestuale -->
   <div class="card">
-    <div class="card-eyebrow">💬 chat finanziaria · Gemini</div>
+    <div class="prof-card-title">chat finanziaria</div>
+    <div class="prof-card-sub">💬 Gemini · assistente contestuale</div>
     <div class="gemini-cta" id="prof-chat-cta" style="display:none;">
       Inserisci l'API key Gemini per abilitare la chat
     </div>
@@ -3350,5 +3535,6 @@ async function profChatSend() {
   }
 }
 </script>
+<div class="toast" id="app-toast"></div>
 </body>
 </html>
