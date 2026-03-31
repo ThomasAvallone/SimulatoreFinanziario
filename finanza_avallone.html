@@ -1566,6 +1566,12 @@ input[type=date]:focus { border-color: var(--gold-dim); }
           </div>
         </div>
       </div>
+      <div class="imp-form-row">
+        <div class="imp-form-group full">
+          <label class="imp-form-label">note (opzionale)</label>
+          <input type="text" class="imp-form-input" id="prof-imp-note" placeholder="es. Finanziamento cucina IKEA">
+        </div>
+      </div>
       <input type="hidden" id="prof-imp-edit-id">
       <div class="imp-form-btns">
         <button class="imp-form-cancel" onclick="profImpegniCloseForm()">Annulla</button>
@@ -3259,6 +3265,7 @@ function profRenderImpegniCard() {
       <div class="imp-row-body">
         <div class="imp-row-tipo">${tipo}</div>
         ${details ? `<div class="imp-row-details">${details}</div>` : ''}
+        ${imp.note ? `<div class="imp-row-details" style="font-style:italic;opacity:0.7;">${imp.note}</div>` : ''}
       </div>
       <div class="imp-row-rata" style="color:var(--blue);">${fmtEur(Math.round(Number(imp.rata)))}/mese</div>
       <div class="imp-row-actions">
@@ -3303,6 +3310,7 @@ function profImpegniOpenForm(id) {
   document.getElementById('prof-imp-tasso').value   = '';
   document.getElementById('prof-imp-mesi').value    = '';
   document.getElementById('prof-imp-altro').value   = '';
+  document.getElementById('prof-imp-note').value    = '';
   document.getElementById('prof-imp-edit-id').value = '';
   document.getElementById('prof-imp-preview').style.display = 'none';
 
@@ -3316,6 +3324,7 @@ function profImpegniOpenForm(id) {
       document.getElementById('prof-imp-tasso').value   = item.tasso   || '';
       document.getElementById('prof-imp-mesi').value    = item.mesi_rimanenti || '';
       document.getElementById('prof-imp-altro').value   = item.altro   || '';
+      document.getElementById('prof-imp-note').value    = item.note    || '';
       document.getElementById('prof-imp-edit-id').value = item.id;
     }
   }
@@ -3342,6 +3351,7 @@ function profImpegniSave() {
     tasso:           parseFloat(document.getElementById('prof-imp-tasso').value)   || 0,
     mesi_rimanenti:  parseInt(document.getElementById('prof-imp-mesi').value)      || 0,
     giorno_addebito: parseInt(document.getElementById('prof-imp-giorno').value)    || 0,
+    note:            document.getElementById('prof-imp-note').value.trim(),
   };
   let list = profGetImpegni();
   if (editId) { list = list.map(i => String(i.id) === editId ? voce : i); }
