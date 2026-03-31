@@ -1196,6 +1196,7 @@ input[type=date]:focus { border-color: var(--gold-dim); }
     <div style="font-size:9.5px;color:var(--text-muted);margin-top:0.875rem;line-height:1.6;">La proiezione parte dal montante reale di €931,24 (31/12/2025), a cui si aggiungono i versamenti futuri dal 01/01/2026 e il TFR residuo in azienda di €3.799,44.</div>
   </div>
 
+  <button class="sim-to-profilo-btn" onclick="profBridgePensione()">↓ Salva contributo corrente nel profilo</button>
   <p class="note">Montante reale al 31/12/2025: €931,24 (Allianz Linea Azionaria). Proiezione dal 01/01/2026 · Nato il 22/01/1990 · TFR residuo in azienda: €3.799,44 (da CU). Rendimenti nominali lordi. Scenario conservativo 5%, base 8%, ottimistico 11%. Rendita calcolata con regola 4% SWR (Trinity Study). Simulazione puramente indicativa, non consulenza finanziaria.</p>
 </div>
 </div>
@@ -1486,6 +1487,10 @@ input[type=date]:focus { border-color: var(--gold-dim); }
     <div class="prof-total-row">
       <span class="prof-total-lbl">totale pensione mensile</span>
       <span class="prof-total-val" id="prof-pen-tot">—</span>
+    </div>
+    <div class="bk-row" id="prof-pen-pmt-row" style="display:none;margin-top:0.75rem;">
+      <div class="bk-label">contributo volontario reale</div>
+      <div class="bk-val" id="prof-pen-pmt-val" style="color:var(--gold-dim);">—</div>
     </div>
     <div class="card-eyebrow" style="margin-top:1.125rem;">posizione Allianz · Linea Azionaria</div>
     <div class="bk-row" style="margin-top:0.5rem;">
@@ -3145,6 +3150,13 @@ function profileRefresh() {
   document.getElementById('prof-pen-tot').textContent  = totPen > 0 ? fmtEur(Math.round(totPen)) + '/mese' : '—';
   document.getElementById('prof-bar-inps').style.width = (inps / maxPen * 100).toFixed(0) + '%';
   document.getElementById('prof-bar-pen').style.width  = (pen  / maxPen * 100).toFixed(0) + '%';
+  const profPenPmt = lsNum('prof_pen_pmt', -1);
+  const ppRow = document.getElementById('prof-pen-pmt-row');
+  const ppVal = document.getElementById('prof-pen-pmt-val');
+  if (ppRow && ppVal && profPenPmt >= 0) {
+    ppVal.textContent = fmtEur(profPenPmt) + '/mese';
+    ppRow.style.display = '';
+  }
 
   // FIRE
   const fireYear = lsGet('fire_year', '');
@@ -3394,11 +3406,20 @@ function profBridgePrestito() {
   profShowToast('✓ Aggiunto al profilo');
 }
 
+function profBridgePensione() {
+  const vol = lsNum('pen-pmt', 0);
+  lsSet('prof_pen_pmt', vol);
+  const row = document.getElementById('prof-pen-pmt-row');
+  const val = document.getElementById('prof-pen-pmt-val');
+  if (row && val) { val.textContent = fmtEur(vol) + '/mese'; row.style.display = ''; }
+  profShowToast('✓ Contributo salvato nel profilo');
+}
+
 function profAnalisiRefresh() {
   const ral        = lsNum('i-ral', 30316);
   const netto      = (ral / 12) * (1 - PROF_TAX_RATE);
   const pacPmt     = lsNum('pac-pmt', 0);
-  const penPmt     = lsNum('pen-pmt', 0);
+  const penPmt     = lsNum('prof_pen_pmt', lsNum('pen-pmt', 0));
 
   // Impegni da profilo (indipendenti dai simulatori)
   const impegni    = profTotaleRate();
@@ -3516,7 +3537,7 @@ function profBuildGeminiContext() {
   const ral        = lsNum('i-ral', 30316);
   const netto      = (ral / 12) * (1 - PROF_TAX_RATE);
   const pacPmt     = lsNum('pac-pmt', 0);
-  const penPmt     = lsNum('pen-pmt', 0);
+  const penPmt     = lsNum('prof_pen_pmt', lsNum('pen-pmt', 0));
   const previdenza = penPmt + PEN_TFR;
   const risparmio  = pacPmt;
   const pensInps   = lsNum('cache_inps_rend', 0);
