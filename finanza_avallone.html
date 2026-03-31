@@ -923,6 +923,7 @@ input[type=date]:focus { border-color: var(--gold-dim); }
     </div>
   </div>
 
+  <button class="sim-to-profilo-btn" onclick="profBridgeMutuo()">↓ Aggiungi al profilo come impegno reale</button>
   <p class="note">Piano francese: rata costante, quota interessi decrescente. Piano italiano: quota capitale costante, rata decrescente. Non include spese accessorie (perizia, istruttoria, assicurazione). Simulazione indicativa, non consulenza finanziaria.</p>
 </div>
 </div>
@@ -1004,6 +1005,7 @@ input[type=date]:focus { border-color: var(--gold-dim); }
     </div>
   </div>
 
+  <button class="sim-to-profilo-btn" onclick="profBridgePrestito()">↓ Aggiungi al profilo come impegno reale</button>
   <p class="note">TAEG stimato include solo gli interessi; spese di istruttoria, assicurazione e bolli non incluse. Simulazione indicativa, non consulenza finanziaria.</p>
 </div>
 </div>
@@ -3354,6 +3356,32 @@ function profImpegniDelete(id) {
   profSaveImpegni(profGetImpegni().filter(i => String(i.id) !== String(id)));
   profRenderImpegniCard();
   profAnalisiRefresh();
+}
+
+function profBridgeMutuo() {
+  const imp   = lsNum('m-imp', 0);
+  const tasso = lsNum('m-tasso', 3);
+  const dur   = lsNum('m-dur', 20);
+  if (imp <= 0) return;
+  const rata = profCalcRataMutuo(imp, tasso, dur);
+  const list = profGetImpegni();
+  list.push({ id: String(Date.now()), tipo: 'Mutuo casa', rata: Math.round(rata),
+    importo: imp, tasso, mesi_rimanenti: Math.round(dur * 12), giorno_addebito: 0 });
+  profSaveImpegni(list);
+  profShowToast('✓ Aggiunto al profilo');
+}
+
+function profBridgePrestito() {
+  const imp = lsNum('p-imp', 0);
+  const tan = lsNum('p-tan', 7);
+  const dur = lsNum('p-dur', 36);
+  if (imp <= 0) return;
+  const rata = profCalcRataPrestito(imp, tan, dur);
+  const list = profGetImpegni();
+  list.push({ id: String(Date.now()), tipo: 'Prestito personale', rata: Math.round(rata),
+    importo: imp, tasso: tan, mesi_rimanenti: dur, giorno_addebito: 0 });
+  profSaveImpegni(list);
+  profShowToast('✓ Aggiunto al profilo');
 }
 
 function profAnalisiRefresh() {
