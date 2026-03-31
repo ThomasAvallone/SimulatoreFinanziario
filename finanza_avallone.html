@@ -355,7 +355,174 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 
 .page.active .card:nth-child(6) { animation-delay: 0.25s; }
 .page.active .card:nth-child(7) { animation-delay: 0.30s; }
-.page.active .card:nth-child(8) { animation-delay: 0.35s; }
+.page.active .card:nth-child(8)  { animation-delay: 0.35s; }
+.page.active .card:nth-child(9)  { animation-delay: 0.40s; }
+.page.active .card:nth-child(10) { animation-delay: 0.45s; }
+.page.active .card:nth-child(11) { animation-delay: 0.50s; }
+.page.active .card:nth-child(12) { animation-delay: 0.55s; }
+.page.active .card:nth-child(13) { animation-delay: 0.60s; }
+
+/* ═══════════════════════════════════════════════
+   PROFILO — ANALISI & GEMINI
+═══════════════════════════════════════════════ */
+
+/* Stacked bar cash flow */
+.cf-bar-wrap {
+  display: flex; height: 10px; border-radius: 6px; overflow: hidden;
+  margin: 0.875rem 0 0.5rem; gap: 2px;
+}
+.cf-bar-seg { height: 100%; border-radius: 3px; transition: width 0.4s ease; min-width: 0; }
+.cf-bar-labels { display: flex; gap: 0; }
+.cf-bar-col { flex: 1; }
+.cf-bar-lbl {
+  font-family: var(--mono); font-size: 9px; color: var(--text-muted);
+  letter-spacing: 0.06em; padding-top: 0.25rem;
+}
+.cf-bar-val {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  display: block; margin-top: 1px;
+}
+
+/* Progress bar analisi */
+.an-prog-wrap {
+  height: 6px; background: rgba(255,255,255,0.06); border-radius: 4px;
+  overflow: hidden; margin: 0.75rem 0 0.375rem;
+}
+.an-prog-bar { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+
+/* Big % display */
+.an-big-pct {
+  font-family: var(--mono); font-size: 42px; font-weight: 600;
+  line-height: 1; letter-spacing: -0.03em;
+}
+.an-benchmark {
+  font-family: var(--mono); font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.06em; margin-top: 0.25rem;
+}
+
+/* Gap previdenziale */
+.gap-row { display: flex; gap: 0.75rem; margin: 0.75rem 0; }
+.gap-col { flex: 1; background: var(--bg-card-alt); border-radius: 8px; padding: 0.75rem; }
+.gap-col-lbl { font-family: var(--mono); font-size: 9px; color: var(--text-muted); letter-spacing: 0.08em; margin-bottom: 0.25rem; }
+.gap-col-val { font-family: var(--mono); font-size: 16px; font-weight: 600; }
+
+/* Score salute finanziaria */
+.score-circle-wrap { display: flex; justify-content: center; margin: 1rem 0 0.5rem; }
+.score-circle {
+  width: 96px; height: 96px; border-radius: 50%;
+  border: 3px solid var(--border-str); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; transition: border-color 0.4s;
+}
+.score-circle-num {
+  font-family: var(--mono); font-size: 32px; font-weight: 600;
+  line-height: 1; letter-spacing: -0.03em;
+}
+.score-circle-label {
+  font-family: var(--mono); font-size: 9px; color: var(--text-muted);
+  letter-spacing: 0.08em; margin-top: 2px;
+}
+.score-label-text {
+  text-align: center; font-size: 13px; font-weight: 500;
+  letter-spacing: 0.02em; margin-bottom: 0.75rem;
+}
+.score-components { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.25rem; }
+.score-comp-row { display: flex; align-items: center; gap: 0.5rem; }
+.score-comp-lbl { font-size: 11px; color: var(--text-dim); flex: 1; }
+.score-comp-bar-wrap { width: 64px; height: 4px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.score-comp-bar { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+.score-comp-val { font-family: var(--mono); font-size: 10px; color: var(--text-muted); width: 24px; text-align: right; }
+
+/* API Key field */
+.apikey-wrap { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+.apikey-input {
+  flex: 1; background: var(--bg-card-alt); border: 0.5px solid var(--border-str);
+  border-radius: 8px; padding: 0.5rem 0.75rem; color: var(--text);
+  font-family: var(--mono); font-size: 12px; outline: none;
+}
+.apikey-input:focus { border-color: rgba(212,168,83,0.4); }
+.apikey-toggle {
+  background: none; border: 0.5px solid var(--border-str); border-radius: 8px;
+  color: var(--text-muted); cursor: pointer; padding: 0 0.6rem; font-size: 14px;
+  transition: color 0.15s;
+}
+.apikey-toggle:hover { color: var(--text); }
+.apikey-save {
+  background: var(--gold-bg); border: 0.5px solid var(--gold-dim); border-radius: 8px;
+  color: var(--gold); cursor: pointer; padding: 0.5rem 0.875rem;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+  transition: background 0.15s;
+}
+.apikey-save:hover { background: rgba(212,168,83,0.12); }
+.apikey-status { font-family: var(--mono); font-size: 10px; color: var(--text-muted); margin-top: 0.375rem; }
+
+/* Gemini CTA */
+.gemini-cta {
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+  gap: 0.5rem; padding: 1.25rem 0; color: var(--text-muted);
+  font-size: 12px; font-family: var(--mono); letter-spacing: 0.04em;
+}
+.gemini-cta button {
+  background: none; border: 0.5px solid var(--border-str); border-radius: 6px;
+  color: var(--gold); cursor: pointer; padding: 0.25rem 0.6rem;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+}
+
+/* Briefing spinner + testo */
+.gemini-loading { display: flex; align-items: center; gap: 0.5rem; padding: 1rem 0; color: var(--text-dim); font-size: 12px; }
+.gemini-spinner {
+  width: 14px; height: 14px; border: 2px solid var(--border-str);
+  border-top-color: var(--gold); border-radius: 50%; flex-shrink: 0;
+  animation: gemSpin 0.8s linear infinite;
+}
+@keyframes gemSpin { to { transform: rotate(360deg); } }
+.gemini-text { font-size: 13px; line-height: 1.7; color: var(--text-dim); white-space: pre-wrap; }
+.gemini-error { font-size: 12px; color: var(--red); font-family: var(--mono); padding: 0.5rem 0; line-height: 1.5; }
+.gemini-refresh-btn {
+  margin-top: 0.75rem; background: none; border: 0.5px solid var(--border-str);
+  border-radius: 6px; color: var(--text-muted); cursor: pointer;
+  padding: 0.3rem 0.75rem; font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.06em; transition: color 0.15s; display: block;
+}
+.gemini-refresh-btn:hover { color: var(--text); }
+
+/* Chat bubbles */
+.chat-history {
+  display: flex; flex-direction: column; gap: 0.625rem;
+  max-height: 320px; overflow-y: auto; padding: 0.25rem 0;
+  margin-bottom: 0.75rem;
+}
+.chat-history::-webkit-scrollbar { width: 3px; }
+.chat-history::-webkit-scrollbar-track { background: transparent; }
+.chat-history::-webkit-scrollbar-thumb { background: var(--border-str); border-radius: 2px; }
+.chat-bubble {
+  max-width: 88%; padding: 0.625rem 0.875rem; border-radius: 10px;
+  font-size: 13px; line-height: 1.55;
+}
+.chat-bubble.user {
+  align-self: flex-end; background: var(--bg-card-alt);
+  border: 0.5px solid var(--border-str); color: var(--text);
+}
+.chat-bubble.ai {
+  align-self: flex-start; background: var(--bg-card);
+  border: 0.5px solid var(--border); color: var(--text-dim);
+}
+.chat-bubble.error { color: var(--red); font-family: var(--mono); font-size: 11px; }
+.chat-input-row { display: flex; gap: 0.5rem; }
+.chat-textarea {
+  flex: 1; background: var(--bg-card-alt); border: 0.5px solid var(--border-str);
+  border-radius: 8px; padding: 0.5rem 0.75rem; color: var(--text);
+  font-family: var(--sans); font-size: 13px; resize: none; outline: none;
+  min-height: 44px; max-height: 100px; line-height: 1.5;
+}
+.chat-textarea:focus { border-color: rgba(212,168,83,0.4); }
+.chat-send-btn {
+  background: var(--gold-bg); border: 0.5px solid var(--gold-dim); border-radius: 8px;
+  color: var(--gold); cursor: pointer; padding: 0 1rem;
+  font-family: var(--mono); font-size: 13px; transition: background 0.15s;
+  align-self: flex-end; height: 44px; min-width: 44px;
+}
+.chat-send-btn:hover { background: rgba(212,168,83,0.12); }
+.chat-send-btn:disabled { opacity: 0.4; cursor: default; }
 
 /* PIC vs PAC comparison grid */
 .picpac-cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
@@ -1240,6 +1407,175 @@ input[type=date]:focus { border-color: var(--gold-dim); }
     <div id="prof-pac-body"></div>
   </div>
 
+  <!-- ── ANALISI FINANZIARIA ─────────────────── -->
+
+  <!-- CARD: Cash flow mensile -->
+  <div class="card">
+    <div class="card-eyebrow">💸 cash flow mensile stimato</div>
+    <div class="cf-bar-wrap">
+      <div class="cf-bar-seg" id="prof-cf-seg-imp"  style="background:var(--blue);width:0%;"></div>
+      <div class="cf-bar-seg" id="prof-cf-seg-risp" style="background:var(--gold);width:0%;"></div>
+      <div class="cf-bar-seg" id="prof-cf-seg-disp" style="background:var(--green);width:0%;"></div>
+    </div>
+    <div class="cf-bar-labels">
+      <div class="cf-bar-col">
+        <div class="cf-bar-lbl" style="color:var(--blue-dim);">impegni</div>
+        <span class="cf-bar-val" id="prof-cf-val-imp" style="color:var(--blue);">—</span>
+      </div>
+      <div class="cf-bar-col">
+        <div class="cf-bar-lbl" style="color:rgba(212,168,83,0.6);">risparmio</div>
+        <span class="cf-bar-val" id="prof-cf-val-risp" style="color:var(--gold);">—</span>
+      </div>
+      <div class="cf-bar-col">
+        <div class="cf-bar-lbl" style="color:var(--green-dim);">disponibile</div>
+        <span class="cf-bar-val" id="prof-cf-val-disp" style="color:var(--green);">—</span>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem;font-size:11px;color:var(--text-muted);font-family:var(--mono);">
+      netto stimato: <span id="prof-cf-netto" style="color:var(--text-dim);">—</span>/mese · tasse ≈30% RAL
+    </div>
+  </div>
+
+  <!-- CARD: Tasso di risparmio -->
+  <div class="card">
+    <div class="card-eyebrow">📈 tasso di risparmio</div>
+    <div style="display:flex;align-items:baseline;gap:0.5rem;margin-top:0.375rem;">
+      <div class="an-big-pct" id="prof-sr-pct">—</div>
+      <div class="an-benchmark">obiettivo: 20%</div>
+    </div>
+    <div class="an-prog-wrap">
+      <div class="an-prog-bar" id="prof-sr-bar" style="width:0%;background:var(--green);"></div>
+    </div>
+    <div style="font-size:11px;color:var(--text-muted);font-family:var(--mono);">
+      <span id="prof-sr-risp">—</span>/mese su <span id="prof-sr-netto">—</span> netto stimato
+    </div>
+  </div>
+
+  <!-- CARD: Gap previdenziale -->
+  <div class="card">
+    <div class="card-eyebrow">🏦 gap previdenziale</div>
+    <div class="gap-row">
+      <div class="gap-col">
+        <div class="gap-col-lbl">REDDITO OGGI</div>
+        <div class="gap-col-val" id="prof-gp-reddito">—</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">netto/mese stimato</div>
+      </div>
+      <div class="gap-col">
+        <div class="gap-col-lbl">PENSIONE STIMATA</div>
+        <div class="gap-col-val" id="prof-gp-pensione">—</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">tasso sost. <span id="prof-gp-tasso">—</span>%</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+      <span style="font-size:12px;color:var(--text-dim);">gap mensile</span>
+      <span style="font-family:var(--mono);font-size:14px;font-weight:600;color:var(--red);" id="prof-gp-gap">—</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:0.375rem;">
+      <span style="font-size:11px;color:var(--text-muted);">capitale aggiuntivo per colmare il gap (SWR 4%)</span>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--red);" id="prof-gp-cap">—</span>
+    </div>
+  </div>
+
+  <!-- CARD: Ottimizzazione IRPEF -->
+  <div class="card">
+    <div class="card-eyebrow">🧾 ottimizzazione fiscale · IRPEF</div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:0.5rem;">
+      <span style="font-size:12px;color:var(--text-dim);">contributo volontario annuo</span>
+      <span style="font-family:var(--mono);font-size:13px;" id="prof-irpef-vol">—</span>
+    </div>
+    <div class="an-prog-wrap">
+      <div class="an-prog-bar" id="prof-irpef-bar" style="width:0%;background:var(--gold);"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+      <span style="font-size:11px;color:var(--text-muted);font-family:var(--mono);">limite € 5.164,57/anno</span>
+      <span style="font-size:11px;color:var(--text-muted);font-family:var(--mono);" id="prof-irpef-pct">—%</span>
+    </div>
+    <div style="margin-top:0.625rem;padding:0.625rem;background:var(--green-bg);border-radius:8px;border:0.5px solid var(--green-dim);" id="prof-irpef-saving-wrap">
+      <span style="font-size:12px;color:var(--green);">💡 potresti risparmiare ancora <strong id="prof-irpef-saving">—</strong> di IRPEF</span>
+    </div>
+  </div>
+
+  <!-- CARD: Score salute finanziaria -->
+  <div class="card">
+    <div class="card-eyebrow">🩺 score salute finanziaria</div>
+    <div class="score-circle-wrap">
+      <div class="score-circle" id="prof-score-circle">
+        <span class="score-circle-num" id="prof-score-num">—</span>
+        <span class="score-circle-label">/ 100</span>
+      </div>
+    </div>
+    <div class="score-label-text" id="prof-score-label">—</div>
+    <div class="score-components">
+      <div class="score-comp-row">
+        <span class="score-comp-lbl">Tasso di risparmio</span>
+        <div class="score-comp-bar-wrap"><div class="score-comp-bar" id="prof-sc-bar-sr"   style="background:var(--green);width:0%;"></div></div>
+        <span class="score-comp-val" id="prof-sc-val-sr">—</span>
+      </div>
+      <div class="score-comp-row">
+        <span class="score-comp-lbl">Copertura pensione</span>
+        <div class="score-comp-bar-wrap"><div class="score-comp-bar" id="prof-sc-bar-pen"  style="background:var(--gold);width:0%;"></div></div>
+        <span class="score-comp-val" id="prof-sc-val-pen">—</span>
+      </div>
+      <div class="score-comp-row">
+        <span class="score-comp-lbl">Avanzamento FIRE</span>
+        <div class="score-comp-bar-wrap"><div class="score-comp-bar" id="prof-sc-bar-fire" style="background:var(--orange);width:0%;"></div></div>
+        <span class="score-comp-val" id="prof-sc-val-fire">—</span>
+      </div>
+      <div class="score-comp-row">
+        <span class="score-comp-lbl">Debiti</span>
+        <div class="score-comp-bar-wrap"><div class="score-comp-bar" id="prof-sc-bar-debt" style="background:var(--blue);width:0%;"></div></div>
+        <span class="score-comp-val" id="prof-sc-val-debt">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── GEMINI AI ───────────────────────────── -->
+
+  <!-- CARD: API Key -->
+  <div class="card">
+    <div class="card-eyebrow">🔑 gemini api key</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:0.25rem;line-height:1.5;">
+      La chiave viene salvata solo su questo dispositivo. Mai trasmessa ad altri servizi.
+    </div>
+    <div class="apikey-wrap">
+      <input type="password" id="prof-apikey-inp" class="apikey-input" placeholder="AIza…" autocomplete="off">
+      <button class="apikey-toggle" onclick="profToggleKey()">👁</button>
+      <button class="apikey-save" onclick="profSaveKey()">Salva</button>
+    </div>
+    <div class="apikey-status" id="prof-apikey-status"></div>
+  </div>
+
+  <!-- CARD: Briefing AI -->
+  <div class="card">
+    <div class="card-eyebrow">🤖 analisi AI · Gemini</div>
+    <div class="gemini-cta" id="prof-briefing-cta" style="display:none;">
+      Inserisci l'API key Gemini per abilitare l'analisi AI
+    </div>
+    <div class="gemini-loading" id="prof-briefing-loading" style="display:none;">
+      <div class="gemini-spinner"></div><span>Analisi in corso…</span>
+    </div>
+    <div class="gemini-text"  id="prof-briefing-text"  style="display:none;"></div>
+    <div class="gemini-error" id="prof-briefing-error" style="display:none;"></div>
+    <button class="gemini-refresh-btn" id="prof-briefing-refresh" onclick="profBriefing(true)" style="display:none;">↻ Aggiorna</button>
+  </div>
+
+  <!-- CARD: Chat contestuale -->
+  <div class="card">
+    <div class="card-eyebrow">💬 chat finanziaria · Gemini</div>
+    <div class="gemini-cta" id="prof-chat-cta" style="display:none;">
+      Inserisci l'API key Gemini per abilitare la chat
+    </div>
+    <div id="prof-chat-wrap" style="display:none;">
+      <div class="chat-history" id="prof-chat-history"></div>
+      <div class="chat-input-row">
+        <textarea class="chat-textarea" id="prof-chat-inp" rows="1"
+          placeholder="Chiedimi qualcosa sulla tua situazione finanziaria…"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();profChatSend();}"></textarea>
+        <button class="chat-send-btn" id="prof-chat-btn" onclick="profChatSend()">↑</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 </div>
 
@@ -1376,7 +1712,15 @@ input[type=date]:focus { border-color: var(--gold-dim); }
 ───────────────────────────────────────────── */
 const PAGE_INIT = {};
 
+let activePageName = '';
 function showPage(name) {
+  // Reset chat Gemini se si lascia la pagina profilo
+  if (activePageName === 'profilo' && name !== 'profilo') {
+    geminiChatHistory = [];
+    const h = document.getElementById('prof-chat-history');
+    if (h) h.innerHTML = '';
+  }
+  activePageName = name;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const el = document.getElementById('page-' + name);
   el.classList.add('active');
@@ -2660,7 +3004,7 @@ function profileRefresh() {
 
   // PAC
   const pacCap0 = lsNum('pac-cap0', 0), pacPmt = lsNum('pac-pmt', 0);
-  const pacCard = document.getElementById('prof-pac-card');
+  const pacCard  = document.getElementById('prof-pac-card');
   if (pacCap0 > 0 || pacPmt > 0) {
     const pacAnn   = lsNum('pac-ann', 20);
     const pacRate  = lsNum('pac-rate', 8);
@@ -2681,10 +3025,329 @@ function profileRefresh() {
   } else {
     pacCard.style.display = 'none';
   }
+
+  // Analisi finanziaria + Gemini UI
+  profAnalisiRefresh();
+  profGeminiUIRefresh();
+  profBriefing(false);
 }
 
 function profileInit() {
   profileRefresh();
+  // Auto-resize textarea chat
+  const ta = document.getElementById('prof-chat-inp');
+  if (ta) {
+    ta.addEventListener('input', () => {
+      ta.style.height = '';
+      ta.style.height = Math.min(ta.scrollHeight, 100) + 'px';
+    });
+  }
+}
+
+/* ─────────────────────────────────────────────
+   PROFILO — ANALISI FINANZIARIA
+───────────────────────────────────────────── */
+const PROF_TAX_RATE = 0.30; // forfait IRPEF + contributi per RAL ~30k
+let   profScoreVal  = 0;    // cache score per Gemini context
+
+function profAnalisiRefresh() {
+  const ral      = lsNum('i-ral', 30316);
+  const netto    = (ral / 12) * (1 - PROF_TAX_RATE);
+  const pacPmt   = lsNum('pac-pmt', 0);
+  const penPmt   = lsNum('pen-pmt', 0);
+  const mImp     = lsNum('m-imp', 0);
+  const pImp     = lsNum('p-imp', 0);
+
+  // Impegni mensili
+  let rataMutuo = 0, rataPrestito = 0;
+  if (mImp > 0) rataMutuo    = profCalcRataMutuo(mImp, lsNum('m-tasso', 3), lsNum('m-dur', 20));
+  if (pImp > 0) rataPrestito = profCalcRataPrestito(pImp, lsNum('p-tan', 7), lsNum('p-dur', 36));
+  const impegni   = rataMutuo + rataPrestito;
+  const risparmio = pacPmt + penPmt + PEN_TFR; // PAC + vol + TFR al fondo
+  const disponibile = Math.max(0, netto - impegni - risparmio);
+
+  // ── CARD 1: Cash flow ──
+  const pImpPct  = netto > 0 ? Math.min(100, impegni / netto * 100) : 0;
+  const pRispPct = netto > 0 ? Math.min(100 - pImpPct, risparmio / netto * 100) : 0;
+  const pDispPct = netto > 0 ? Math.min(100 - pImpPct - pRispPct, disponibile / netto * 100) : 0;
+  document.getElementById('prof-cf-seg-imp').style.width  = pImpPct.toFixed(1)  + '%';
+  document.getElementById('prof-cf-seg-risp').style.width = pRispPct.toFixed(1) + '%';
+  document.getElementById('prof-cf-seg-disp').style.width = pDispPct.toFixed(1) + '%';
+  document.getElementById('prof-cf-val-imp').textContent  = fmtEur(Math.round(impegni));
+  document.getElementById('prof-cf-val-risp').textContent = fmtEur(Math.round(risparmio));
+  document.getElementById('prof-cf-val-disp').textContent = fmtEur(Math.round(disponibile));
+  document.getElementById('prof-cf-netto').textContent    = fmtEur(Math.round(netto));
+
+  // ── CARD 2: Tasso risparmio ──
+  const tassoRisp = netto > 0 ? risparmio / netto * 100 : 0;
+  const srColor   = tassoRisp >= 20 ? 'var(--green)' : tassoRisp >= 10 ? 'var(--orange)' : 'var(--red)';
+  const srEl = document.getElementById('prof-sr-pct');
+  srEl.textContent  = tassoRisp.toFixed(1).replace('.', ',') + '%';
+  srEl.style.color  = srColor;
+  document.getElementById('prof-sr-bar').style.width      = Math.min(100, tassoRisp / 20 * 100).toFixed(1) + '%';
+  document.getElementById('prof-sr-bar').style.background = srColor;
+  document.getElementById('prof-sr-risp').textContent     = fmtEur(Math.round(risparmio));
+  document.getElementById('prof-sr-netto').textContent    = fmtEur(Math.round(netto));
+
+  // ── CARD 3: Gap previdenziale ──
+  const pensInps  = lsNum('cache_inps_rend', 0);
+  const pensFondo = lsNum('cache_pen_rend',  0);
+  const pensione  = pensInps + pensFondo;
+  const gapMensile = Math.max(0, netto - pensione);
+  const tassoSost  = netto > 0 ? pensione / netto * 100 : 0;
+  const capGap     = gapMensile * 12 * 25;
+  document.getElementById('prof-gp-reddito').textContent  = fmtEur(Math.round(netto)) + '/mese';
+  document.getElementById('prof-gp-pensione').textContent = pensione > 0 ? fmtEur(Math.round(pensione)) + '/mese' : 'n.d.';
+  document.getElementById('prof-gp-tasso').textContent    = tassoSost.toFixed(0);
+  document.getElementById('prof-gp-gap').textContent      = gapMensile > 0 ? fmtEur(Math.round(gapMensile)) + '/mese' : '—';
+  document.getElementById('prof-gp-cap').textContent      = capGap > 0 ? fmtK(Math.round(capGap)) : '—';
+
+  // ── CARD 4: Ottimizzazione IRPEF ──
+  const volAnnuo  = penPmt * 12;
+  const irpefRate = lsNum('penIRPEF', 0.35); // aliquota marginale utente
+  const margine   = Math.max(0, PEN_DED_MAX - volAnnuo);
+  const saving    = margine * irpefRate;
+  const irpefPct  = Math.min(100, PEN_DED_MAX > 0 ? volAnnuo / PEN_DED_MAX * 100 : 0);
+  document.getElementById('prof-irpef-vol').textContent  = fmtEurFull(volAnnuo) + '/anno';
+  document.getElementById('prof-irpef-bar').style.width  = irpefPct.toFixed(1) + '%';
+  document.getElementById('prof-irpef-pct').textContent  = irpefPct.toFixed(0) + '%';
+  const savWrap = document.getElementById('prof-irpef-saving-wrap');
+  if (saving > 0.5) {
+    document.getElementById('prof-irpef-saving').textContent = fmtEurFull(saving);
+    savWrap.style.display = '';
+  } else {
+    savWrap.style.display = 'none';
+  }
+
+  // ── CARD 5: Score salute finanziaria ──
+  // 0–10 per componente
+  const cSR    = Math.min(10, tassoRisp / 25 * 10);                               // 10 = 25%+
+  const cPen   = Math.min(10, Math.max(0, (tassoSost - 30) / 50 * 10));           // 10 = 80%+
+  const firePct = lsNum('fire_pct', 0);                                            // 0-100
+  const cFire  = Math.min(10, firePct / 10);                                       // 10 = 100%
+  let cDebt;
+  if (mImp <= 0 && pImp <= 0)     cDebt = 10;
+  else if (mImp > 0 && pImp <= 0) cDebt = 5;
+  else if (mImp > 0 && pImp > 0)  cDebt = 3;
+  else                              cDebt = 0;
+
+  const score = Math.round((cSR + cPen + cFire + cDebt) / 4 * 10);
+  profScoreVal = score; // cache per Gemini context
+  const scoreColor = score >= 70 ? 'var(--green)' : score >= 40 ? 'var(--orange)' : 'var(--red)';
+  const scoreLabel = score >= 70 ? 'Ottima forma 💪' : score >= 40 ? 'Sulla buona strada 🙂' : 'Da migliorare 💡';
+
+  document.getElementById('prof-score-num').textContent   = score;
+  document.getElementById('prof-score-num').style.color   = scoreColor;
+  document.getElementById('prof-score-circle').style.borderColor = scoreColor;
+  document.getElementById('prof-score-label').textContent = scoreLabel;
+  document.getElementById('prof-score-label').style.color = scoreColor;
+
+  const comps = [
+    { bar: 'prof-sc-bar-sr',   val: 'prof-sc-val-sr',   s: cSR   },
+    { bar: 'prof-sc-bar-pen',  val: 'prof-sc-val-pen',  s: cPen  },
+    { bar: 'prof-sc-bar-fire', val: 'prof-sc-val-fire', s: cFire },
+    { bar: 'prof-sc-bar-debt', val: 'prof-sc-val-debt', s: cDebt },
+  ];
+  comps.forEach(c => {
+    document.getElementById(c.bar).style.width = (c.s / 10 * 100).toFixed(0) + '%';
+    document.getElementById(c.val).textContent  = c.s.toFixed(1).replace('.', ',');
+  });
+}
+
+/* ─────────────────────────────────────────────
+   GEMINI AI
+───────────────────────────────────────────── */
+let geminiLastBriefing = null;  // debounce in-memory (per sessione tab)
+let geminiChatHistory  = [];    // { role: 'user'|'model', parts: [{text}] }
+
+const GEMINI_SYSTEM = `Sei un consulente finanziario personale per Thomas Avallone, italiano.
+Hai accesso ai suoi dati finanziari reali elencati di seguito.
+Rispondi sempre in italiano, con tono professionale ma diretto.
+Usa i numeri specifici nei tuoi ragionamenti.
+Produce un'analisi in 3 sezioni: "Punti di forza", "Aree da migliorare", "Suggerimento prioritario".
+Ogni sezione: 2-3 frasi concise. Nessun elenco puntato, solo testo fluido.`;
+
+function profBuildGeminiContext() {
+  const ral       = lsNum('i-ral', 30316);
+  const netto     = (ral / 12) * (1 - PROF_TAX_RATE);
+  const pacPmt    = lsNum('pac-pmt', 0);
+  const penPmt    = lsNum('pen-pmt', 0);
+  const risparmio = pacPmt + penPmt + PEN_TFR;
+  const pensInps  = lsNum('cache_inps_rend', 0);
+  const pensFondo = lsNum('cache_pen_rend',  0);
+  const pensione  = pensInps + pensFondo;
+  const gapMens   = Math.max(0, netto - pensione);
+  const tassoSost = netto > 0 ? pensione / netto * 100 : 0;
+  const volAnnuo  = penPmt * 12;
+  const margine   = Math.max(0, PEN_DED_MAX - volAnnuo);
+  const firePct   = lsNum('fire_pct', 0);
+  const fireYear  = lsGet('fire_year', '');
+  return {
+    eta: profCalcAge(),
+    ral_annuo: Math.round(ral),
+    netto_mensile_stimato: Math.round(netto),
+    tasso_risparmio_pct: netto > 0 ? Math.round(risparmio / netto * 1000) / 10 : 0,
+    risparmio_mensile: Math.round(risparmio),
+    pensione_inps_mensile: Math.round(pensInps),
+    pensione_complementare_mensile: Math.round(pensFondo),
+    gap_previdenziale_mensile: Math.round(gapMens),
+    tasso_sostituzione_pct: Math.round(tassoSost * 10) / 10,
+    montante_allianz: PEN_MONTANTE_REALE,
+    fire_year: fireYear || null,
+    fire_completamento_pct: Math.round(firePct * 10) / 10,
+    contributo_volontario_annuo: Math.round(volAnnuo),
+    margine_irpef_residuo: Math.round(margine),
+    score_salute: profScoreVal,
+    ha_mutuo: lsNum('m-imp', 0) > 0,
+    ha_prestito: lsNum('p-imp', 0) > 0,
+    pac_attivo: pacPmt > 0 || lsNum('pac-cap0', 0) > 0,
+  };
+}
+
+async function geminiFetch(key, messages) {
+  const resp = await fetch(
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + key,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: GEMINI_SYSTEM }] },
+        contents: messages,
+      }),
+    }
+  );
+  if (!resp.ok) {
+    const code = resp.status;
+    if (code === 400 || code === 403) throw new Error('key_invalid');
+    if (code === 429) throw new Error('rate_limit');
+    throw new Error('http_' + code);
+  }
+  const data = await resp.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+}
+
+function geminiErrMsg(err) {
+  const m = err && err.message ? err.message : '';
+  if (!m || m === 'Failed to fetch') return '⚠ Impossibile raggiungere Gemini. Controlla la connessione.';
+  if (m === 'key_invalid')  return '⚠ API key non valida o accesso negato. Verifica la chiave inserita.';
+  if (m === 'rate_limit')   return '⚠ Limite di richieste raggiunto. Riprova tra qualche minuto.';
+  return '⚠ Errore dal servizio Gemini (' + m + '). Riprova più tardi.';
+}
+
+/* ── API Key UI ── */
+function profToggleKey() {
+  const inp = document.getElementById('prof-apikey-inp');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+function profSaveKey() {
+  const val = document.getElementById('prof-apikey-inp').value.trim();
+  if (!val) return;
+  lsSet('gemini_key', val);
+  document.getElementById('prof-apikey-status').textContent = '✓ Chiave salvata';
+  profGeminiUIRefresh();
+  geminiLastBriefing = null; // forza nuovo briefing dopo salvataggio chiave
+  profBriefing(false);
+}
+
+/* ── Gemini UI state ── */
+function profGeminiUIRefresh() {
+  const key = lsGet('gemini_key', '');
+  const hasKey = key.length > 0;
+  if (hasKey) {
+    document.getElementById('prof-apikey-inp').value = '••••••••••••••••';
+    if (!document.getElementById('prof-apikey-status').textContent)
+      document.getElementById('prof-apikey-status').textContent = '✓ Chiave configurata';
+  }
+  document.getElementById('prof-briefing-cta').style.display    = hasKey ? 'none' : '';
+  document.getElementById('prof-briefing-refresh').style.display = hasKey ? '' : 'none';
+  document.getElementById('prof-chat-cta').style.display  = hasKey ? 'none' : '';
+  document.getElementById('prof-chat-wrap').style.display = hasKey ? '' : 'none';
+}
+
+/* ── Briefing ── */
+async function profBriefing(force) {
+  const key = lsGet('gemini_key', '');
+  if (!key) return;
+  // Debounce: skip se già chiamato < 5 min fa e non forzato
+  const now = Date.now();
+  const tsKey = 'fa_gemini_briefing_ts';
+  const lastTs = parseInt(sessionStorage.getItem(tsKey) || '0', 10);
+  if (!force && (now - lastTs) < 5 * 60 * 1000) return;
+  sessionStorage.setItem(tsKey, String(now));
+  geminiLastBriefing = now;
+
+  const loadEl = document.getElementById('prof-briefing-loading');
+  const textEl = document.getElementById('prof-briefing-text');
+  const errEl  = document.getElementById('prof-briefing-error');
+  loadEl.style.display = ''; textEl.style.display = 'none'; errEl.style.display = 'none';
+
+  try {
+    const ctx  = profBuildGeminiContext();
+    const text = await geminiFetch(key, [
+      { role: 'user', parts: [{ text: JSON.stringify(ctx, null, 2) }] },
+    ]);
+    loadEl.style.display = 'none';
+    textEl.textContent   = text;
+    textEl.style.display = '';
+  } catch (err) {
+    loadEl.style.display = 'none';
+    errEl.textContent    = geminiErrMsg(err);
+    errEl.style.display  = '';
+  }
+}
+
+/* ── Chat ── */
+function profChatAddBubble(role, text, isError) {
+  const histEl = document.getElementById('prof-chat-history');
+  const div = document.createElement('div');
+  div.className = 'chat-bubble ' + (role === 'user' ? 'user' : 'ai') + (isError ? ' error' : '');
+  div.textContent = text;
+  histEl.appendChild(div);
+  histEl.scrollTop = histEl.scrollHeight;
+}
+
+async function profChatSend() {
+  const inp = document.getElementById('prof-chat-inp');
+  const btn = document.getElementById('prof-chat-btn');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  const key = lsGet('gemini_key', '');
+  if (!key) return;
+
+  inp.value = ''; inp.style.height = '';
+  btn.disabled = true;
+  profChatAddBubble('user', msg);
+
+  geminiChatHistory.push({ role: 'user', parts: [{ text: msg }] });
+  if (geminiChatHistory.length > 20) geminiChatHistory = geminiChatHistory.slice(-20);
+
+  // loading bubble
+  const histEl  = document.getElementById('prof-chat-history');
+  const loadDiv = document.createElement('div');
+  loadDiv.className = 'chat-bubble ai';
+  loadDiv.innerHTML = '<div class="gemini-loading" style="padding:0;"><div class="gemini-spinner"></div></div>';
+  histEl.appendChild(loadDiv);
+  histEl.scrollTop = histEl.scrollHeight;
+
+  const ctx = profBuildGeminiContext();
+  const messages = [
+    { role: 'user',  parts: [{ text: 'Dati finanziari: ' + JSON.stringify(ctx, null, 2) }] },
+    { role: 'model', parts: [{ text: 'Dati ricevuti. Sono pronto a rispondere.' }] },
+    ...geminiChatHistory,
+  ];
+
+  try {
+    const reply = await geminiFetch(key, messages);
+    histEl.removeChild(loadDiv);
+    geminiChatHistory.push({ role: 'model', parts: [{ text: reply }] });
+    if (geminiChatHistory.length > 20) geminiChatHistory = geminiChatHistory.slice(-20);
+    profChatAddBubble('model', reply);
+  } catch (err) {
+    histEl.removeChild(loadDiv);
+    profChatAddBubble('model', geminiErrMsg(err), true);
+  } finally {
+    btn.disabled = false;
+  }
 }
 </script>
 </body>
