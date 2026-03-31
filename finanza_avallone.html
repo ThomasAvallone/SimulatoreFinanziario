@@ -3499,12 +3499,18 @@ function profAnalisiRefresh() {
 let geminiLastBriefing = null;  // debounce in-memory (per sessione tab)
 let geminiChatHistory  = [];    // { role: 'user'|'model', parts: [{text}] }
 
-const GEMINI_SYSTEM = `Sei un consulente finanziario personale per Thomas Avallone, italiano.
+const GEMINI_SYSTEM_BRIEFING = `Sei un consulente finanziario personale per Thomas Avallone, italiano.
 Hai accesso ai suoi dati finanziari reali elencati di seguito.
 Rispondi sempre in italiano, con tono professionale ma diretto.
 Usa i numeri specifici nei tuoi ragionamenti.
 Produce un'analisi in 3 sezioni: "Punti di forza", "Aree da migliorare", "Suggerimento prioritario".
 Ogni sezione: 2-3 frasi concise. Nessun elenco puntato, solo testo fluido.`;
+
+const GEMINI_SYSTEM_CHAT = `Sei un consulente finanziario personale per Thomas Avallone, italiano.
+Hai accesso ai suoi dati finanziari reali (forniti nel primo messaggio).
+Rispondi sempre in italiano, con tono professionale ma diretto.
+Usa i numeri specifici quando pertinenti. Rispondi in modo conciso e conversazionale alla domanda posta.
+Non riprodurre l'analisi completa a meno che non venga esplicitamente richiesta.`;
 
 function profBuildGeminiContext() {
   const ral        = lsNum('i-ral', 30316);
@@ -3540,9 +3546,10 @@ function profBuildGeminiContext() {
     contributo_volontario_annuo: Math.round(volAnnuo),
     margine_irpef_residuo: Math.round(margine),
     score_salute: profScoreVal,
-    totale_rate_mensili: Math.round(profTotaleRate()),
+    affitto_mensile:     Math.round(imp.filter(i => i.tipo === 'Affitto').reduce((s,i) => s + (Number(i.rata)||0), 0)),
+    rate_debiti_mensili: Math.round(imp.filter(i => i.tipo !== 'Affitto').reduce((s,i) => s + (Number(i.rata)||0), 0)),
+    totale_impegni_mensili: Math.round(profTotaleRate()),
     n_impegni: imp.length,
-    ha_affitto:  imp.some(i => i.tipo === 'Affitto'),
     ha_mutuo:    imp.some(i => i.tipo === 'Mutuo casa'),
     ha_prestiti: imp.some(i => ['Prestito auto','Prestito personale','Finanziamento','Leasing'].includes(i.tipo)),
     pac_attivo:  pacPmt > 0 || lsNum('pac-cap0', 0) > 0,
@@ -3588,14 +3595,14 @@ function profParseBriefing(text) {
   }).join('');
 }
 
-async function geminiFetch(key, messages) {
+async function geminiFetch(key, messages, systemPrompt) {
   const resp = await fetch(
     'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=' + key,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: GEMINI_SYSTEM }] },
+        system_instruction: { parts: [{ text: systemPrompt || GEMINI_SYSTEM_BRIEFING }] },
         contents: messages,
       }),
     }
@@ -3727,7 +3734,7 @@ async function profChatSend() {
   ];
 
   try {
-    const reply = await geminiFetch(key, messages);
+    const reply = await geminiFetch(key, messages, GEMINI_SYSTEM_CHAT);
     histEl.removeChild(loadDiv);
     geminiChatHistory.push({ role: 'model', parts: [{ text: reply }] });
     if (geminiChatHistory.length > 20) geminiChatHistory = geminiChatHistory.slice(-20);
