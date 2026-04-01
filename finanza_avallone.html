@@ -3437,6 +3437,101 @@ function profImpegniDelete(id) {
   profAnalisiRefresh();
 }
 
+function profRenderRisparmiCard() {
+  const list   = profGetRisparmi();
+  const listEl = document.getElementById('prof-risparmi-list');
+  if (!listEl) return;
+  if (list.length === 0) {
+    listEl.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:0.5rem 0 0.25rem;">Nessun risparmio inserito — aggiungi la prima voce ↓</div>';
+    return;
+  }
+  listEl.innerHTML = list.map((r, idx) => {
+    const isLast = idx === list.length - 1;
+    const safeId = String(r.id).replace(/'/g, "\\'");
+    const parts  = [];
+    if (Number(r.incremento_mensile) > 0) parts.push('+' + fmtEur(r.incremento_mensile) + '/mese');
+    return `<div class="imp-row${isLast ? ' last' : ''}">
+      <div class="imp-row-body">
+        <div class="imp-row-tipo">${r.nome}</div>
+        ${parts.length ? `<div class="imp-row-details">${parts.join(' · ')}</div>` : ''}
+        ${r.note ? `<div class="imp-row-details" style="font-style:italic;opacity:0.7;">${r.note}</div>` : ''}
+      </div>
+      <div class="imp-row-rata" style="color:var(--teal);">${fmtEur(Math.round(Number(r.saldo)))}</div>
+      <div class="imp-row-actions">
+        <button class="imp-action-btn" onclick="profRisparmiOpenForm('${safeId}')" title="Modifica">✏</button>
+        <button class="imp-action-btn" onclick="profRisparmiDelete('${safeId}')" title="Elimina" style="color:var(--red);">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function profRenderPatrimonioCard() {
+  const liquidita = profTotaleLiquidita();
+  const crescita  = profTotaleIncrementoMensile();
+  const liqEl     = document.getElementById('prof-pat-liquidita');
+  const crRow     = document.getElementById('prof-pat-crescita-row');
+  const crEl      = document.getElementById('prof-pat-crescita');
+  if (!liqEl) return;
+  liqEl.textContent   = fmtEur(Math.round(liquidita));
+  crRow.style.display = crescita > 0 ? '' : 'none';
+  if (crescita > 0) crEl.textContent = '+' + fmtEur(crescita) + '/mese';
+}
+
+function profRisparmiOpenForm(id) {
+  const form = document.getElementById('prof-risp-form');
+  document.getElementById('prof-risp-nome').value       = '';
+  document.getElementById('prof-risp-saldo').value      = '';
+  document.getElementById('prof-risp-incremento').value = '';
+  document.getElementById('prof-risp-note').value       = '';
+  document.getElementById('prof-risp-edit-id').value    = '';
+  if (id) {
+    const item = profGetRisparmi().find(r => String(r.id) === String(id));
+    if (item) {
+      document.getElementById('prof-risp-nome').value       = item.nome              || '';
+      document.getElementById('prof-risp-saldo').value      = item.saldo             || '';
+      document.getElementById('prof-risp-incremento').value = item.incremento_mensile|| '';
+      document.getElementById('prof-risp-note').value       = item.note              || '';
+      document.getElementById('prof-risp-edit-id').value    = item.id;
+    }
+  }
+  form.classList.add('open');
+  form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function profRisparmiCloseForm() {
+  document.getElementById('prof-risp-form').classList.remove('open');
+}
+
+function profRisparmiSave() {
+  const nome  = document.getElementById('prof-risp-nome').value.trim();
+  const saldo = parseFloat(document.getElementById('prof-risp-saldo').value);
+  if (!nome)        { document.getElementById('prof-risp-nome').focus();  return; }
+  if (isNaN(saldo)) { document.getElementById('prof-risp-saldo').focus(); return; }
+  const editId = document.getElementById('prof-risp-edit-id').value;
+  const voce   = {
+    id:                editId || String(Date.now()),
+    nome,
+    saldo,
+    incremento_mensile: parseFloat(document.getElementById('prof-risp-incremento').value) || 0,
+    note:               document.getElementById('prof-risp-note').value.trim(),
+  };
+  let list = profGetRisparmi();
+  if (editId) { list = list.map(r => String(r.id) === editId ? voce : r); }
+  else        { list.push(voce); }
+  profSaveRisparmi(list);
+  profRisparmiCloseForm();
+  profRenderRisparmiCard();
+  profRenderPatrimonioCard();
+  profAnalisiRefresh();
+}
+
+function profRisparmiDelete(id) {
+  profSaveRisparmi(profGetRisparmi().filter(r => String(r.id) !== String(id)));
+  profRenderRisparmiCard();
+  profRenderPatrimonioCard();
+  profAnalisiRefresh();
+}
+
 function profBridgeMutuo() {
   const imp   = lsNum('m-imp', 0);
   const tasso = lsNum('m-tasso', 3);
