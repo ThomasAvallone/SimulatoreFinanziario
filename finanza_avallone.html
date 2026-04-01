@@ -3571,6 +3571,34 @@ function profBridgePensione() {
   profShowToast('✓ Contributo salvato nel profilo');
 }
 
+function fireBridgeFromProfilo() {
+  const pat0El = document.getElementById('fire-pat0');
+  const rispEl = document.getElementById('fire-risp');
+  const pat0   = Math.min(profTotaleLiquidita(), +pat0El.max);
+  const risp   = Math.min(lsNum('pac-pmt', 0) + profTotaleIncrementoMensile(), +rispEl.max);
+  pat0El.value = pat0; lsSet('fire-pat0', pat0); updateGradient(pat0El);
+  rispEl.value = risp; lsSet('fire-risp', risp); updateGradient(rispEl);
+  fireRefresh();
+  profShowToast('✓ Dati reali caricati nel FIRE');
+}
+
+function profBridgeFire() {
+  const saldo = lsNum('fire-pat0', 0);
+  let   list  = profGetRisparmi();
+  const idx   = list.findIndex(r => r._fire_bridge);
+  const voce  = {
+    id:                 idx >= 0 ? list[idx].id : String(Date.now()),
+    nome:               'FIRE — patrimonio attuale',
+    saldo,
+    incremento_mensile: 0,
+    note:               '',
+    _fire_bridge:       true,
+  };
+  if (idx >= 0) { list[idx] = voce; } else { list.push(voce); }
+  profSaveRisparmi(list);
+  profShowToast('✓ Patrimonio aggiunto al profilo');
+}
+
 function profAnalisiRefresh() {
   const ral        = lsNum('i-ral', 30316);
   const netto      = (ral / 12) * (1 - PROF_TAX_RATE);
