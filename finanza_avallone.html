@@ -3286,6 +3286,10 @@ const TIPI_IMPEGNO = ['Affitto','Mutuo casa','Prestito auto','Prestito personale
 function profGetImpegni()     { try { return JSON.parse(lsGet('prof_impegni','[]')); } catch(e) { return []; } }
 function profSaveImpegni(arr) { lsSet('prof_impegni', JSON.stringify(arr)); }
 function profTotaleRate()     { return profGetImpegni().reduce((s,i) => s + (Number(i.rata)||0), 0); }
+function profGetRisparmi()           { try { return JSON.parse(lsGet('prof_risparmi','[]')); } catch(e) { return []; } }
+function profSaveRisparmi(arr)        { lsSet('prof_risparmi', JSON.stringify(arr)); }
+function profTotaleLiquidita()        { return profGetRisparmi().reduce((s,r) => s + (Number(r.saldo)||0), 0); }
+function profTotaleIncrementoMensile(){ return profGetRisparmi().reduce((s,r) => s + (Number(r.incremento_mensile)||0), 0); }
 
 function profCalcResiduo(item) {
   const r = Number(item.rata) || 0;
