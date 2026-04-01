@@ -3233,6 +3233,10 @@ function profileRefresh() {
   // Impegni finanziari (lista da profilo, indipendente dai simulatori)
   profRenderImpegniCard();
 
+  // Risparmi liquidi e patrimonio
+  profRenderRisparmiCard();
+  profRenderPatrimonioCard();
+
   // PAC
   const pacCap0 = lsNum('pac-cap0', 0), pacPmt = lsNum('pac-pmt', 0);
   const pacCard  = document.getElementById('prof-pac-card');
@@ -3576,7 +3580,7 @@ function profAnalisiRefresh() {
   // Impegni da profilo (indipendenti dai simulatori)
   const impegni    = profTotaleRate();
   const previdenza = penPmt + PEN_TFR; // contributo volontario + TFR al fondo
-  const risparmio  = pacPmt;            // PAC investimento libero
+  const risparmio  = pacPmt + profTotaleIncrementoMensile(); // PAC + risparmi liberi mensili
   const disponibile = Math.max(0, netto - impegni - previdenza - risparmio);
 
   // ── CARD 1: Cash flow (4 segmenti) ──
@@ -3691,7 +3695,7 @@ function profBuildGeminiContext() {
   const pacPmt     = lsNum('pac-pmt', 0);
   const penPmt     = lsNum('prof_pen_pmt', lsNum('pen-pmt', 0));
   const previdenza = penPmt + PEN_TFR;
-  const risparmio  = pacPmt;
+  const risparmio  = pacPmt + profTotaleIncrementoMensile(); // PAC + risparmi liberi mensili
   const pensInps   = lsNum('cache_inps_rend', 0);
   const pensFondo  = lsNum('cache_pen_rend',  0);
   const pensione   = pensInps + pensFondo;
@@ -3725,6 +3729,9 @@ function profBuildGeminiContext() {
     n_impegni: imp.length,
     ha_mutuo:    imp.some(i => i.tipo === 'Mutuo casa'),
     ha_prestiti: imp.some(i => ['Prestito auto','Prestito personale','Finanziamento','Leasing'].includes(i.tipo)),
+    liquidita_totale:          Math.round(profTotaleLiquidita()),
+    risparmio_libero_mensile:  Math.round(profTotaleIncrementoMensile()),
+    n_voci_risparmio:          profGetRisparmi().length,
     pac_attivo:  pacPmt > 0 || lsNum('pac-cap0', 0) > 0,
   };
 }
