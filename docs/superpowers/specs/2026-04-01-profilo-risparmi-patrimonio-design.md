@@ -38,6 +38,7 @@ Il profilo personale già traccia impegni finanziari (debiti/affitto) e il contr
 ### UX Card "risparmi" nel profilo
 - Posizione: dopo la card "impegni finanziari", prima del patrimonio
 - Stessa struttura della card impegni: lista voci + form inline
+- Se lista vuota: mostra placeholder "Nessun risparmio inserito — aggiungi la prima voce ↓"
 - Ogni riga mostra: nome, saldo formattato, incremento mensile (se > 0), note (se presente)
 - Azioni per riga: modifica (matita) / elimina (×)
 - Form campi:
@@ -58,6 +59,8 @@ Il profilo personale già traccia impegni finanziari (debiti/affitto) e il contr
 
 ### Impatto sul cash flow bar
 - Segmento "risparmio" (teal): da `pac-pmt` a `pac-pmt + profTotaleIncrementoMensile()`
+- Semantica: `incremento_mensile` è denaro che esce mensilmente dal reddito disponibile verso un conto risparmio — è un cash outflow reale, non una proiezione. Giusto includerlo nel segmento risparmio insieme a PAC.
+- `disponibile` si riduce coerentemente: `netto - impegni - previdenza - (pac-pmt + incrementi)`
 - Sia `profAnalisiRefresh()` che `profBuildGeminiContext()` aggiornati
 
 ---
@@ -86,13 +89,15 @@ Aggiunti a `profBuildGeminiContext()`:
 ### Tasto A: "← Carica dati reali dal profilo" (FIRE → legge profilo)
 - Posizione: nella card "parametri personali" del FIRE, sopra i controlli
 - Comportamento: imposta `fire-pat0` = `profTotaleLiquidita()`, `fire-risp` = `pac-pmt + profTotaleIncrementoMensile()`
-- Aggiorna i slider e chiama `fireRefresh()`
+- I valori vengono clampati al `max` dei rispettivi slider prima di essere assegnati (evita overflow silenzioso)
+- Aggiorna i slider, chiama `updateGradient()` su entrambi, poi `fireRefresh()`
 - Funzione JS: `fireBridgeFromProfilo()`
 
 ### Tasto B: "↓ Aggiungi al profilo come voce risparmio" (FIRE → scrive profilo)
 - Posizione: in fondo alla pagina FIRE, prima del disclaimer (stesso pattern mutuo/prestito)
-- Comportamento: crea o aggiorna una voce in `prof_risparmi` con `nome: "FIRE — patrimonio stimato"`, `saldo: fire-pat0`, `incremento_mensile: 0`
-  - Se esiste già una voce con quel nome, la aggiorna (non duplica)
+- Comportamento: crea o aggiorna una voce in `prof_risparmi` con `nome: "FIRE — patrimonio attuale"`, `saldo: fire-pat0`, `incremento_mensile: 0`
+  - Il valore `fire-pat0` è inserito manualmente dall'utente nel FIRE, non è un output simulato — è l'utente che stima il proprio patrimonio attuale
+  - Deduplicazione tramite flag `_fire_bridge: true` nella voce (non tramite nome, che è fragile): se esiste già una voce con quel flag, viene aggiornata; altrimenti ne viene creata una nuova
 - Funzione JS: `profBridgeFire()`
 
 ---
