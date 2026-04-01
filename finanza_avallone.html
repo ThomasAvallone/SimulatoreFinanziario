@@ -1585,6 +1585,57 @@ input[type=date]:focus { border-color: var(--gold-dim); }
     </div>
   </div>
 
+  <!-- RISPARMI LIQUIDI -->
+  <div class="card" id="prof-risparmi-card">
+    <div class="prof-card-title">risparmi liquidi</div>
+    <div class="prof-card-sub">conti, liquidità, sotto al materasso</div>
+    <div id="prof-risparmi-list"></div>
+    <button class="imp-add-btn" onclick="profRisparmiOpenForm()">+ aggiungi voce</button>
+    <div class="imp-form" id="prof-risp-form">
+      <div class="imp-form-row">
+        <div class="imp-form-group full">
+          <label class="imp-form-label">nome *</label>
+          <input type="text" class="imp-form-input" id="prof-risp-nome" placeholder="es. Conto Fineco">
+        </div>
+      </div>
+      <div class="imp-form-row">
+        <div class="imp-form-group">
+          <label class="imp-form-label">saldo attuale € *</label>
+          <input type="number" class="imp-form-input" id="prof-risp-saldo" min="0" step="100" placeholder="5000">
+        </div>
+        <div class="imp-form-group">
+          <label class="imp-form-label">incremento mensile €</label>
+          <input type="number" class="imp-form-input" id="prof-risp-incremento" min="0" step="50" placeholder="0">
+        </div>
+      </div>
+      <div class="imp-form-row">
+        <div class="imp-form-group full">
+          <label class="imp-form-label">note (opzionale)</label>
+          <input type="text" class="imp-form-input" id="prof-risp-note" placeholder="es. per emergenze">
+        </div>
+      </div>
+      <input type="hidden" id="prof-risp-edit-id">
+      <div class="imp-form-btns">
+        <button class="imp-form-cancel" onclick="profRisparmiCloseForm()">Annulla</button>
+        <button class="imp-form-save" onclick="profRisparmiSave()">Salva</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATRIMONIO -->
+  <div class="card" id="prof-patrimonio-card">
+    <div class="prof-card-title">patrimonio</div>
+    <div class="prof-card-sub">liquidità inserita manualmente</div>
+    <div class="bk-row" style="border-bottom:none;">
+      <div class="bk-label">liquidità totale</div>
+      <div class="bk-val" id="prof-pat-liquidita" style="color:var(--teal);">€ 0</div>
+    </div>
+    <div class="bk-row" id="prof-pat-crescita-row" style="display:none;border-bottom:none;margin-top:0.5rem;">
+      <div class="bk-label">crescita mensile</div>
+      <div class="bk-val" id="prof-pat-crescita" style="color:var(--teal-dim);">—</div>
+    </div>
+  </div>
+
   <!-- PAC (visibile solo se configurato) -->
   <div class="card" id="prof-pac-card" style="display:none;">
     <div class="prof-card-title">piano di accumulo</div>
